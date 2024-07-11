@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>@ViewBag.Title</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/content/images/ttth.ico" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="/assets/vendor/fonts/boxicons.css" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.min.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="/assets/css/adminstyle.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css"/>
+
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <link rel="stylesheet" href="/assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <!-- Page CSS -->
+    <!-- Helpers -->
+    <script type="text/javascript" src="/assets/vendor/js/helpers.js"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+
+    <style>
+        .avatar .bx {
+            border: 1px solid #aaa;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .breadcrumb {
+            margin-bottom: 0;
+        }
+    </style>
+
+</head>
+<body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+                <div class="app-brand manager">
+                    <a href="/" class="app-brand-link">
+                        <span class="app-brand-logo manager">
+                            <img src="/content/images/logo-ttth.png" alt="" />
+                        </span>
+                    </a>
+
+                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                        <i class="bx bx-chevron-left bx-sm align-middle"></i>
+                    </a>
+                </div>
+
+                <div class="menu-inner-shadow"></div>
+
+                <ul class="menu-inner py-1">
+                    <!-- Dashboard -->
+                    <li class="menu-item active">
+                        <a href="/" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div data-i18n="Analytics">Dashboard</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/PhatSinhBaiGiang/Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                            <div data-i18n="Basic">Phát sinh bài giảng</div>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+            </aside>
+            <!-- / Menu -->
+            <!-- Layout container -->
+            <div class="layout-page">
+                <!-- Navbar -->
+
+                <nav class="layout-navbar container-fluid navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+                    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                            <i class="bx bx-menu bx-sm"></i>
+                        </a>
+                    </div>
+
+                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                        <!-- Search -->
+                        <div class="navbar-nav align-items-center">
+                            Thông tin đăng nhập: @ViewBag.ThongTin
+                        </div>
+                        <!-- /Search -->
+
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+
+                            <!-- User -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <i class="bx bxs-user"></i>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="bx bx-user me-2"></i>
+                                            <span class="align-middle">Thông tin cá nhân</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Accounts/ChangePassword">
+                                            <i class="bx bx-cog me-2"></i>
+                                            <span class="align-middle">Đổi mật khẩu</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Accounts/Logout">
+                                            <i class="bx bx-power-off me-2"></i>
+                                            <span class="align-middle">Đăng xuất</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--/ User -->
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- / Navbar -->
+                <!-- Content wrapper -->
+                <div class="content-wrapper">
+                    <!-- Content -->
+                    <!-- Toast with Placements -->
+                    <div class="bs-toast toast toast-placement-ex m-2"
+                         role="alert"
+                         aria-live="assertive"
+                         aria-atomic="true"
+                         data-delay="2000">
+                        <div class="toast-header">
+                            <i class="bx bx-bell me-2"></i>
+                            <div class="me-auto fw-semibold">Thông báo</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">&nbsp;</div>
+                    </div>
+                    <!-- Toast with Placements -->
+                    <div>
+                        @RenderBody()
+                    </div>
+                    <!-- / Content -->
+                    <!-- Footer -->
+                    <footer class="content-footer footer bg-footer-theme">
+                        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                            <div class="mb-2 mb-md-0">
+                                ©
+                                <script>
+                                    document.write(new Date().getFullYear());
+                                </script>
+                                , Trung Tâm Tin Học - ĐH Khoa Học Tự Nhiên Tp.HCM
+                            </div>
+
+                        </div>
+                    </footer>
+                    <!-- / Footer -->
+
+                    <div class="content-backdrop fade"></div>
+                </div>
+                <!-- Content wrapper -->
+            </div>
+            <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+    <script src="/assets/vendor/js/menu.js"></script>
+    <!-- endbuild -->
+    <!-- Vendors JS -->
+    <script src="/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+
+    <!-- Main JS -->
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/myFunc.js"></script>
+    <!-- Page JS -->
+    @*<script src="/assets/js/dashboards-analytics.js"></script>*@
+    <script src="/assets/js/ui-toasts.js"></script>
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script src="/assets/js/buttons.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+
+    @RenderSection("scripts", required: false)
+    <script>
+        $("#Tu_ngay").datepicker({ format: "dd/mm/yyyy" });
+        $("#Den_ngay").datepicker({ format: "dd/mm/yyyy" });
+        $("#Tu_ngay_p").datepicker({ format: "dd/mm/yyyy" });
+        $("#Den_ngay_p").datepicker({ format: "dd/mm/yyyy" });
+        $("#Ngay_day").datepicker({ format: "dd/mm/yyyy" });
+        $("#Th_Ngay_sinh").datepicker({ format: "dd/mm/yyyy" });
+        
+        var thongbao = "@(ViewData["ThongBao"] != null ? Html.Raw(ViewData["ThongBao"].ToString()) : Html.Raw(""))";
+        var toastPlacementExample = document.querySelector('.toast-placement-ex');
+        let selectedType, selectedPlacement, toastPlacement;
+
+        // Dispose toast when open another
+        function toastDispose(toast) {
+            if (toast && toast._element !== null) {
+                if (toastPlacementExample) {
+                    toastPlacementExample.classList.remove(selectedType);
+                    DOMTokenList.prototype.remove.apply(toastPlacementExample.classList, selectedPlacement);
+                }
+                toast.dispose();
+            }
+        }
+        // Placement Button click
+        if (thongbao != "") {
+            if (toastPlacement) {
+                toastDispose(toastPlacement);
+            }
+            $('.toast-body').html(thongbao);
+            selectedType = "bg-primary";
+            if (thongbao.includes("Lỗi:")) {
+                selectedType = "bg-danger";
+            }
+            selectedPlacement = "top-0 start-50 translate-middle-x".split(' ');
+
+            toastPlacementExample.classList.add(selectedType);
+            DOMTokenList.prototype.add.apply(toastPlacementExample.classList, selectedPlacement);
+            toastPlacement = new bootstrap.Toast(toastPlacementExample);
+            toastPlacement.show();
+        }
+
+        if ($('.getURL').length > 0) {
+            $('.getURL').each(function () {
+                var base = $(this);
+                base.blur(function () {
+                    getStrip(this, '#' + base.attr('rel'));
+                });
+            });
+        }
+
+
+    </script>
+</body>
+</html>

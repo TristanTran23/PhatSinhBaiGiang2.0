@@ -1,0 +1,208 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='https://www.w3.org/TR/html40/'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>
+                                    <div class="generate-item" id="generatedItem01"><h2 id="11kintrcdatabasetrongcsdliuquanh">1.1/ Kiến trúc Database trong cơ sở dữ liệu quan hệ</h2><br><h3 id="tisaocnhiuvkintrcdatabasetrongphntchdliu">Tại sao cần hiểu về kiến trúc Database trong phân tích dữ liệu?</h3>
+<p>Trong thế giới dữ liệu bùng nổ ngày nay, việc phân tích dữ liệu hiệu quả đóng vai trò then chốt giúp doanh nghiệp đưa ra quyết định sáng suốt. Để phân tích dữ liệu hiệu quả, việc hiểu rõ cách tổ chức và quản lý dữ liệu là điều kiện tiên quyết. </p>
+<p>Cơ sở dữ liệu quan hệ (Relational Database) đã trở thành tiêu chuẩn vàng trong việc lưu trữ và quản lý dữ liệu có cấu trúc. Hiểu về kiến trúc của cơ sở dữ liệu quan hệ, cụ thể là <strong>Database</strong>, là bước đầu tiên và vô cùng quan trọng để khai thác tối đa tiềm năng của dữ liệu trong công việc. </p>
+<p>Nắm vững kiến trúc Database, bạn sẽ:</p>
+<ul>
+<li><strong>Tổ chức dữ liệu hiệu quả:</strong>  Bạn có thể phân chia dữ liệu thành các Database riêng biệt, logic theo mục đích sử dụng, giúp dễ dàng quản lý và truy xuất thông tin.</li>
+<li><strong>Nâng cao hiệu suất truy vấn:</strong> Một kiến trúc Database được thiết kế tốt giúp tối ưu hóa tốc độ truy vấn dữ liệu, giảm thiểu thời gian chờ đợi và nâng cao năng suất làm việc.</li>
+<li><strong>Đảm bảo tính toàn vẹn dữ liệu:</strong> Kiến trúc Database rõ ràng giúp thiết lập các ràng buộc và quy tắc đảm bảo tính nhất quán và chính xác của dữ liệu.</li>
+<li><strong>Đơn giản hóa việc bảo trì và mở rộng:</strong>  Database được tổ chức hợp lý giúp việc sao lưu, phục hồi và mở rộng hệ thống dữ liệu trở nên dễ dàng hơn.</li>
+</ul>
+<h3 id="databaselg">Database là gì?</h3>
+<p><strong>Database</strong> (cơ sở dữ liệu) là một tập hợp có cấu trúc của dữ liệu được tổ chức và lưu trữ một cách có hệ thống. Database cho phép người dùng dễ dàng truy cập, quản lý và cập nhật dữ liệu. Trong mô hình cơ sở dữ liệu quan hệ, Database được tạo thành từ một hoặc nhiều <strong>bảng (table)</strong> có liên quan với nhau.</p>
+<p><strong>Ví dụ:</strong></p>
+<p>Giả sử bạn đang làm việc cho một công ty bán lẻ trực tuyến. Bạn có thể có các Database riêng biệt cho:</p>
+<ul>
+<li><strong>Khách hàng:</strong> Chứa thông tin về khách hàng như họ tên, địa chỉ, lịch sử mua hàng.</li>
+<li><strong>Sản phẩm:</strong>  Chứa thông tin về sản phẩm như tên sản phẩm, mô tả, giá cả, số lượng tồn kho.</li>
+<li><strong>Đơn hàng:</strong> Chứa thông tin về đơn hàng như ngày đặt hàng, sản phẩm đã mua, thông tin thanh toán.</li>
+</ul>
+<h3 id="xydngkintrcdatabasetrongbigquery">Xây dựng kiến trúc Database trong BigQuery</h3>
+<p>BigQuery là kho dữ liệu lớn, không cần máy chủ của Google Cloud Platform, cho phép bạn chạy các truy vấn SQL trên terabyte dữ liệu với hiệu suất cao. Dưới đây là cách bạn có thể xây dựng kiến trúc Database trong BigQuery:</p>
+<ol>
+<li><strong>Tạo Dataset:</strong> Dataset là một đơn vị tổ chức cơ bản trong BigQuery. Mỗi Dataset chứa một hoặc nhiều bảng. </li>
+</ol>
+<ul>
+<li>Truy cập BigQuery Console: <a href="https://console.cloud.google.com/bigquery">https://console.cloud.google.com/bigquery</a></li>
+<li>Chọn project của bạn.</li>
+<li>Click vào <strong>Create dataset</strong>.</li>
+<li>Nhập <strong>Dataset ID</strong> (ví dụ: <code>e-commerce_data</code>).</li>
+<li>Chọn <strong>Data location</strong> (vị trí lưu trữ dữ liệu).</li>
+<li>Click <strong>Create dataset</strong>.</li>
+</ul>
+<ol>
+<li><strong>Tạo bảng trong Dataset:</strong> Mỗi bảng sẽ lưu trữ một loại dữ liệu cụ thể. </li>
+</ol>
+<ul>
+<li>Trong BigQuery Console, chọn Dataset bạn vừa tạo.</li>
+<li>Click vào <strong>Create table</strong>.</li>
+<li>Chọn nguồn dữ liệu cho bảng của bạn.</li>
+<li>Định nghĩa <strong>Schema</strong> (cấu trúc bảng) bao gồm tên cột, kiểu dữ liệu cho từng cột.</li>
+<li>Click <strong>Create table</strong>.</li>
+</ul>
+<p><strong>Ví dụ:</strong></p>
+<p>Để tạo bảng <code>customers</code> trong Dataset <code>e-commerce_data</code>, bạn cần định nghĩa Schema như sau:</p>
+<p>| Tên cột | Kiểu dữ liệu | Mô tả |
+|---|---|---|
+| customer_id | INT64 | ID của khách hàng |
+| customer_name | STRING | Tên khách hàng |
+| email | STRING | Địa chỉ email |
+| phone_number | STRING | Số điện thoại |</p>
+<p>Bằng cách tổ chức dữ liệu thành các Dataset và bảng trong BigQuery, bạn đã xây dựng một kiến trúc Database giúp tối ưu hóa việc phân tích dữ liệu trong công việc.</p>
+<p><strong>Tài liệu tham khảo:</strong></p>
+<ul>
+<li><a href="https://cloud.google.com/bigquery/docs">BigQuery Documentation</a></li>
+<li><a href="https://cloud.google.com/bigquery/docs/datasets">Creating and using datasets</a></li>
+<li><a href="https://cloud.google.com/bigquery/docs/tables">Creating and using tables</a> </li>
+</ul></div><div class="generate-item" id="generatedItem11"><h2 id="12kintrctablethucvmtdatabasenilutrdliudidngdngvct">1.2/ Kiến trúc Table (thuộc về một Database): Nơi lưu trữ dữ liệu dưới dạng dòng và cột</h2><br><h3 id="tisaocnhiuvkintrctabletrongcsdliuquanh">Tại sao cần hiểu về kiến trúc Table trong cơ sở dữ liệu quan hệ?</h3>
+<p>Trong thế giới phân tích dữ liệu, việc hiểu rõ kiến trúc dữ liệu là vô cùng quan trọng. Nó giống như việc xây nhà, trước khi bắt tay vào xây dựng, bạn cần phải có bản thiết kế chi tiết về kết cấu, vật liệu, cách bố trí các phòng ốc. Tương tự như vậy, kiến trúc table trong cơ sở dữ liệu quan hệ chính là "bản thiết kế" cho dữ liệu của bạn. Hiểu rõ kiến trúc table giúp bạn:</p>
+<ul>
+<li><strong>Truy vấn dữ liệu hiệu quả:</strong> Biết dữ liệu được tổ chức như thế nào cho phép bạn viết các câu truy vấn SQL tối ưu hơn, từ đó rút ngắn thời gian xử lý và tăng hiệu suất phân tích.</li>
+<li><strong>Duy trì tính nhất quán dữ liệu:</strong> Một kiến trúc table được thiết kế tốt giúp đảm bảo tính nhất quán và chính xác của dữ liệu, tránh được các lỗi dữ liệu tiềm ẩn.</li>
+<li><strong>Dễ dàng mở rộng và bảo trì:</strong> Khi dữ liệu phát triển, việc hiểu rõ kiến trúc table sẽ giúp bạn dễ dàng mở rộng cơ sở dữ liệu và thực hiện các tác vụ bảo trì một cách hiệu quả.</li>
+</ul>
+<h3 id="kintrctabletrongcsdliuquanhlg">Kiến trúc Table trong cơ sở dữ liệu quan hệ là gì?</h3>
+<p>Trong cơ sở dữ liệu quan hệ, dữ liệu được lưu trữ trong các bảng (table). Mỗi bảng giống như một bảng tính, được cấu trúc thành các hàng (row) và cột (column). </p>
+<ul>
+<li><strong>Hàng (Row):</strong> Mỗi hàng đại diện cho một bản ghi dữ liệu duy nhất. Ví dụ, trong bảng lưu trữ thông tin khách hàng, mỗi hàng sẽ đại diện cho một khách hàng cụ thể.</li>
+<li><strong>Cột (Column):</strong> Mỗi cột đại diện cho một thuộc tính của dữ liệu. Ví dụ, trong bảng khách hàng, các cột có thể bao gồm: ID khách hàng, tên khách hàng, địa chỉ, số điện thoại,…</li>
+</ul>
+<p>Để dễ hình dung, hãy xem ví dụ về bảng "Khách hàng" dưới đây:</p>
+<p>| ID Khách hàng | Tên Khách hàng | Địa chỉ | Số điện thoại |
+|---|---|---|---|
+| KH001 | Nguyễn Văn A | 123 Đường ABC, Quận 1, TP.HCM | 0901234567 |
+| KH002 | Trần Thị B | 456 Đường DEF, Quận 2, TP.HCM | 0919876543 |
+| KH003 | Lê Văn C | 789 Đường GHI, Quận 3, TP.HCM | 0987654321 |</p>
+<p>Trong bảng này:</p>
+<ul>
+<li>Mỗi <strong>hàng</strong> đại diện cho một khách hàng.</li>
+<li>Các <strong>cột</strong> bao gồm: ID Khách hàng, Tên Khách hàng, Địa chỉ, Số điện thoại.</li>
+</ul>
+<h3 id="xydngkintrctabletrongbigquerygooglecloudplatform">Xây dựng kiến trúc Table trong BigQuery (Google Cloud Platform)</h3>
+<p>BigQuery là một dịch vụ kho dữ liệu lớn, được quản lý đầy đủ và không cần máy chủ của Google Cloud Platform. Để xây dựng table trong BigQuery, bạn có thể sử dụng ngôn ngữ SQL. </p>
+<p><strong>Ví dụ:</strong> Tạo bảng "Khách hàng" trong BigQuery:</p>
+<pre><code class="sql language-sql">CREATE TABLE `ten_dataset.KhachHang` (
+  `ID_KhachHang` STRING NOT NULL,
+  `Ten_KhachHang` STRING,
+  `DiaChi` STRING,
+  `SoDienThoai` STRING
+);
+</code><button id="btncopycode" class="btn-copy-code" onclick="copyCode(this)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" class="icon-sm"><path fill="currentColor" fill-rule="evenodd" d="M7 5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-2v2a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3h2zm2 2h5a3 3 0 0 1 3 3v5h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1zM5 9a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1z" clip-rule="evenodd"></path></svg> Copy code</button></pre>
+<p>Trong đó:</p>
+<ul>
+<li><code>ten_dataset</code>: Tên dataset chứa bảng.</li>
+<li><code>KhachHang</code>: Tên bảng.</li>
+<li><code>ID_KhachHang</code>, <code>Ten_KhachHang</code>, <code>DiaChi</code>, <code>SoDienThoai</code>: Tên các cột.</li>
+<li><code>STRING</code>: Kiểu dữ liệu của cột.</li>
+<li><code>NOT NULL</code>: Ràng buộc cột không được phép null.</li>
+</ul>
+<p>Để tìm hiểu thêm về cách tạo bảng trong BigQuery, bạn có thể tham khảo tài liệu của Google: <a href="https://cloud.google.com/bigquery/docs/creating-tables">https://cloud.google.com/bigquery/docs/creating-tables</a></p></div><div class="generate-item" id="generatedItem21"><h2 id="1tngquanvcsdliuquanh">1. Tổng quan về Cơ sở dữ liệu quan hệ</h2><br><p>Trong thế giới dữ liệu bùng nổ ngày nay, việc phân tích dữ liệu hiệu quả là chìa khóa then chốt để đưa ra các quyết định kinh doanh sáng suốt. Để làm được điều này, việc hiểu rõ về cách thức tổ chức và quản lý dữ liệu là vô cùng quan trọng. Đó là lý do tại sao kiến trúc cơ sở dữ liệu quan hệ, đặc biệt là mô hình thực thể kết hợp ERD, đóng vai trò then chốt trong ngành phân tích dữ liệu.</p>
+<h3 id="11tisaocnhiukintrccsdliuquanhwhy">1.1 Tại sao cần hiểu kiến trúc cơ sở dữ liệu quan hệ? (WHY)</h3>
+<p>Hãy tưởng tượng bạn là một nhà phân tích dữ liệu tại một công ty thương mại điện tử. Bạn có quyền truy cập vào một lượng lớn dữ liệu về khách hàng, sản phẩm, đơn hàng và các tương tác trên website. Nhưng dữ liệu này nằm rải rác ở nhiều nơi, không theo một trật tự logic nào. Bạn sẽ gặp rất nhiều khó khăn trong việc:</p>
+<ul>
+<li><strong>Truy vấn dữ liệu:</strong> Việc tìm kiếm thông tin cụ thể, ví dụ như danh sách khách hàng đã mua sản phẩm A trong tháng trước, sẽ trở nên phức tạp và mất thời gian.</li>
+<li><strong>Duy trì tính nhất quán của dữ liệu:</strong> Nếu dữ liệu về cùng một khách hàng được lưu trữ ở nhiều nơi khác nhau, việc đảm bảo tính chính xác và đồng nhất của thông tin sẽ rất khó khăn.</li>
+<li><strong>Phân tích dữ liệu hiệu quả:</strong> Việc thiếu cấu trúc dữ liệu rõ ràng sẽ cản trở bạn trong việc phân tích và rút ra những insight giá trị từ dữ liệu.</li>
+</ul>
+<p>Kiến trúc cơ sở dữ liệu quan hệ giúp giải quyết những vấn đề này bằng cách tổ chức dữ liệu một cách có hệ thống và logic, giúp bạn dễ dàng truy vấn, quản lý và phân tích dữ liệu.</p>
+<h3 id="12kintrccsdliuquanhlgwhat">1.2 Kiến trúc cơ sở dữ liệu quan hệ là gì? (WHAT)</h3>
+<p><strong>Cơ sở dữ liệu quan hệ (Relational Database)</strong> là một loại cơ sở dữ liệu lưu trữ dữ liệu dưới dạng các bảng (table) có liên kết với nhau. Mỗi bảng chứa thông tin về một loại thực thể (entity) cụ thể, ví dụ như khách hàng, sản phẩm hoặc đơn hàng. </p>
+<p>Hãy xem xét một ví dụ đơn giản về cơ sở dữ liệu của một cửa hàng trực tuyến:</p>
+<p>| Khách hàng |    | Sản phẩm |     | Đơn hàng |      |
+| ---------- | -- | -------- | --- | -------- | ---- |
+| ID         |    | ID       |     | ID        |      |
+| Họ tên     |    | Tên      |     | Ngày đặt  |      |
+| Địa chỉ     |    | Giá      |     | ID Khách hàng| |
+|            |    |          |     | ID Sản phẩm |   |</p>
+<p>Mỗi bảng có một <strong>khóa chính (primary key)</strong>, là một cột hoặc tập hợp các cột duy nhất xác định mỗi hàng trong bảng. Ví dụ, cột "ID" trong bảng "Khách hàng" là khóa chính. </p>
+<p>Các bảng được liên kết với nhau thông qua <strong>khóa ngoại (foreign key)</strong>. Khóa ngoại là một cột trong bảng này tham chiếu đến khóa chính của bảng khác. Ví dụ, cột "ID Khách hàng" trong bảng "Đơn hàng" là khóa ngoại tham chiếu đến khóa chính "ID" trong bảng "Khách hàng".</p>
+<p>Kiến trúc này cho phép bạn lưu trữ dữ liệu một cách hiệu quả, tránh trùng lặp và đảm bảo tính toàn vẹn của dữ liệu.</p>
+<h3 id="13mhnhthcthkthperdhow">1.3 Mô hình thực thể kết hợp ERD (HOW)</h3>
+<p><strong>Mô hình thực thể kết hợp (Entity Relationship Diagram - ERD)</strong> là một biểu đồ trực quan mô tả các thực thể dữ liệu và mối quan hệ giữa chúng. ERD là công cụ hữu ích để thiết kế cơ sở dữ liệu quan hệ.</p>
+<h4 id="131ccthnhphncaerd">1.3.1 Các thành phần của ERD:</h4>
+<ul>
+<li><strong>Hình chữ nhật:</strong> Biểu diễn một thực thể (entity), ví dụ như "Khách hàng", "Sản phẩm", "Đơn hàng".</li>
+<li><strong>Elip:</strong> Biểu diễn thuộc tính (attribute) của thực thể, ví dụ như "Họ tên", "Địa chỉ", "Giá".</li>
+<li><strong>Đường nối:</strong> Biểu diễn mối quan hệ (relationship) giữa các thực thể. </li>
+<li><strong>Ký hiệu trên đường nối:</strong> Thể hiện loại quan hệ giữa các thực thể:<ul>
+<li><strong>1-1 (one-to-one):</strong> Một thực thể A chỉ có thể liên kết với tối đa một thực thể B, và ngược lại.</li>
+<li><strong>1-n (one-to-many):</strong> Một thực thể A có thể liên kết với nhiều thực thể B, nhưng một thực thể B chỉ có thể liên kết với một thực thể A.</li>
+<li><strong>n-n (many-to-many):</strong> Một thực thể A có thể liên kết với nhiều thực thể B, và ngược lại.</li></ul></li>
+</ul>
+<h4 id="132xydngerdtrngooglebigquery">1.3.2 Xây dựng ERD trên Google BigQuery:</h4>
+<p>Google BigQuery không có công cụ trực quan để vẽ ERD. Tuy nhiên, bạn có thể sử dụng các công cụ vẽ biểu đồ của bên thứ ba như  <a href="https://www.lucidchart.com/">Lucidchart</a>, <a href="https://draw.io/">draw.io</a>, hoặc <a href="https://erdplus.com/">ERDPlus</a> để thiết kế ERD, sau đó dựa vào ERD để tạo các bảng và liên kết trong BigQuery.</p>
+<p>Ví dụ, dựa trên ví dụ cửa hàng trực tuyến ở trên, ta có thể vẽ ERD như sau:</p>
+<p>[Hình ảnh minh họa ERD của cửa hàng trực tuyến]</p>
+<p><strong>Lưu ý:</strong> </p>
+<ul>
+<li>ERD là một mô hình trừu tượng, bạn có thể điều chỉnh cho phù hợp với nhu cầu cụ thể của mình.</li>
+<li>Việc hiểu rõ về ERD sẽ giúp bạn thiết kế cơ sở dữ liệu hiệu quả và dễ dàng khai thác dữ liệu sau này.</li>
+</ul>
+<p><strong>Phần tiếp theo:</strong> Chúng ta sẽ đi sâu hơn vào các khái niệm về bảng (table) và cách thức lưu trữ dữ liệu trong cơ sở dữ liệu quan hệ.</p></div><div class="generate-item" id="generatedItem31"><h2 id="1tngquanvcsdliuquanh">1. Tổng quan về Cơ sở dữ liệu Quan hệ</h2><br><h3 id="11kintrcdatabasetrongcsdliuquanh">1.1 Kiến trúc Database trong Cơ sở dữ liệu Quan hệ</h3>
+<h4 id="tisaocnhiuvkintrcdatabase">Tại sao cần hiểu về Kiến trúc Database?</h4>
+<p>Trong thời đại bùng nổ dữ liệu như hiện nay, việc phân tích dữ liệu (Data Analytics) đóng vai trò vô cùng quan trọng, giúp các doanh nghiệp đưa ra những quyết định kinh doanh hiệu quả. Để phân tích dữ liệu một cách hiệu quả, chúng ta cần một hệ thống lưu trữ và quản lý dữ liệu mạnh mẽ và khoa học. Đó chính là lúc <strong>Cơ sở dữ liệu Quan hệ (Relational Database)</strong> và <strong>Kiến trúc Database</strong> phát huy tác dụng.</p>
+<p>Hiểu rõ về Kiến trúc Database trong Cơ sở dữ liệu Quan hệ mang lại nhiều lợi ích thiết thực cho công việc phân tích dữ liệu:</p>
+<ul>
+<li><strong>Tối ưu hóa truy vấn dữ liệu:</strong> Biết cách dữ liệu được tổ chức sẽ giúp bạn viết truy vấn SQL hiệu quả hơn, rút ngắn thời gian xử lý và tăng tốc độ phân tích.</li>
+<li><strong>Thiết kế mô hình dữ liệu hiệu quả:</strong>  Kiến thức về Kiến trúc Database giúp bạn thiết kế mô hình dữ liệu phù hợp với yêu cầu phân tích, tránh dư thừa dữ liệu và đảm bảo tính nhất quán.</li>
+<li><strong>Nâng cao hiệu suất hệ thống:</strong>  Kiến trúc Database được thiết kế tốt sẽ giúp hệ thống hoạt động ổn định, giảm thiểu tình trạng nghẽn cổ chai và tối ưu hóa hiệu suất truy vấn.</li>
+</ul>
+<h4 id="kintrcdatabasetrongcsdliuquanhlg">Kiến trúc Database trong Cơ sở dữ liệu Quan hệ là gì?</h4>
+<p>Kiến trúc Database trong Cơ sở dữ liệu Quan hệ mô tả cách thức tổ chức và quản lý dữ liệu trong hệ thống. Mô hình phổ biến nhất là mô hình 3 lớp (Three-Schema Architecture):</p>
+<p><strong>1. Lớp Quan điểm (View Level):</strong> </p>
+<ul>
+<li>Là lớp giao tiếp trực tiếp với người dùng cuối (end-user) và các ứng dụng. </li>
+<li>Cung cấp nhiều góc nhìn (view) khác nhau về dữ liệu, tùy thuộc vào nhu cầu sử dụng của mỗi người dùng. </li>
+<li>Che giấu sự phức tạp của dữ liệu ở lớp bên dưới, giúp người dùng dễ dàng truy cập và thao tác với dữ liệu.</li>
+</ul>
+<p><strong>2. Lớp Logic (Logical Level):</strong></p>
+<ul>
+<li>Mô tả cấu trúc logic của toàn bộ dữ liệu trong hệ thống, bao gồm các bảng (table), cột (column), kiểu dữ liệu, ràng buộc (constraint),…</li>
+<li>Xác định mối quan hệ giữa các thực thể dữ liệu (entity) trong hệ thống.</li>
+<li>Đảm bảo tính toàn vẹn và nhất quán của dữ liệu.</li>
+</ul>
+<p><strong>3. Lớp Vật lý (Physical Level):</strong></p>
+<ul>
+<li>Mô tả cách thức lưu trữ dữ liệu vật lý trên thiết bị lưu trữ (ổ cứng, SSD,…).</li>
+<li>Bao gồm các thông tin chi tiết về cách thức tổ chức file, index, phân vùng dữ liệu,…</li>
+<li>Tối ưu hóa hiệu suất lưu trữ và truy xuất dữ liệu.</li>
+</ul>
+<h4 id="xydngkintrcdatabasetrongbigquerygooglecloudplatform">Xây dựng Kiến trúc Database trong BigQuery (Google Cloud Platform)</h4>
+<p>BigQuery là kho dữ liệu lớn (data warehouse) serverless, được quản lý hoàn toàn bởi Google Cloud Platform, cho phép bạn lưu trữ và phân tích lượng dữ liệu lớn với hiệu suất cao. Dưới đây là các bước cơ bản để xây dựng Kiến trúc Database trong BigQuery:</p>
+<p><strong>1. Tạo Dataset:</strong> Dataset là nơi chứa các bảng dữ liệu có liên quan đến nhau. Bạn có thể tạo dataset theo từng dự án, bộ phận hoặc mục đích sử dụng.</p>
+<p><strong>2. Thiết kế Schema cho Bảng:</strong> </p>
+<ul>
+<li>Xác định các cột (column) và kiểu dữ liệu cho mỗi cột trong bảng.</li>
+<li>Sử dụng kiểu dữ liệu phù hợp để tối ưu hóa hiệu suất truy vấn và lưu trữ.</li>
+<li>Đặt tên cột rõ ràng, dễ hiểu và tuân thủ chuẩn đặt tên.</li>
+</ul>
+<p><strong>3.  Định nghĩa Ràng buộc (Constraint):</strong></p>
+<ul>
+<li>Sử dụng ràng buộc để đảm bảo tính toàn vẹn dữ liệu, ví dụ: ràng buộc khóa chính (primary key), khóa ngoại (foreign key),…</li>
+</ul>
+<p><strong>4.  Tối ưu hóa Bảng:</strong></p>
+<ul>
+<li>Phân vùng bảng (partitioning) theo thời gian hoặc các tiêu chí khác để tăng tốc độ truy vấn.</li>
+<li>Sử dụng tính năng clustering để nhóm các dòng dữ liệu có liên quan gần nhau, giúp truy vấn nhanh hơn.</li>
+</ul>
+<p><strong>Ví dụ:</strong> Giả sử bạn muốn xây dựng database trong BigQuery để lưu trữ thông tin khách hàng và đơn hàng.</p>
+<ul>
+<li><strong>Dataset:</strong> <code>Customer_Data</code></li>
+<li><strong>Bảng <code>Customers</code>:</strong><ul>
+<li><code>customer_id</code> (INT64, PRIMARY KEY)</li>
+<li><code>customer_name</code> (STRING)</li>
+<li><code>email</code> (STRING)</li>
+<li><code>phone_number</code> (STRING)</li></ul></li>
+<li><strong>Bảng <code>Orders</code>:</strong><ul>
+<li><code>order_id</code> (INT64, PRIMARY KEY)</li>
+<li><code>customer_id</code> (INT64, FOREIGN KEY REFERENCES <code>Customers</code>(customer_id))</li>
+<li><code>order_date</code> (DATE)</li>
+<li><code>total_amount</code> (FLOAT64)</li></ul></li>
+</ul>
+<p><strong>Tài liệu tham khảo:</strong></p>
+<ul>
+<li><a href="https://cloud.google.com/bigquery/docs">BigQuery Documentation</a> </li>
+</ul>
+<hr>
+<p>This is the Vietnamese translation of the first section. Let me know when you're ready to proceed with the next part. </p></div></body></html>

@@ -1,0 +1,629 @@
+﻿@model List<PhatSinhBaiGiang.Models.DocumentContentModel>
+@using System.Web.Mvc.Html;
+@{
+    ViewBag.Title = "GeminiProcess";
+}
+<style>
+    .container-p-y {
+        padding-bottom: 0 !important;
+    }
+
+    .process-title {
+        color: #FD6504;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .card-body {
+        height: calc(100vh - 140px);
+        overflow: auto;
+        padding-bottom: 0;
+    }
+
+    .content-processing {
+        padding-right: 0;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 340px);
+    }
+
+    .prompt-content {
+        margin: 10px 0;
+    }
+
+    .process-container {
+        padding: 0 14px;
+    }
+
+    .content-list {
+        padding: 0;
+    }
+
+    .content-title {
+        background-color: #4d4b4b;
+        color: #fff;
+        padding: 5px 10px;
+    }
+
+    .noi-dung-chon {
+        height: calc(100vh - 410px);
+        overflow: auto;
+        border: 1px solid #aaa;
+    }
+
+    .controls {
+        text-align: center;
+        padding: 5px;
+    }
+
+    p.Head3 {
+        margin: 0 0 0 5px;
+        padding: 5px 0;
+    }
+
+    p.Head4 {
+        margin: 0 0 0 20px;
+        padding: 5px 0;
+    }
+
+    p.Head5 {
+        margin: 0 0 0 40px;
+        padding: 5px 0;
+        text-indent: -15px;
+        padding-left: 35px;
+    }
+
+    p label {
+        cursor: pointer;
+    }
+
+        p label:hover {
+            color: #db0505;
+        }
+    .generate-results {
+        padding-bottom: 40px;
+    }
+        .generate-results pre {
+            background-color: rgba(13, 13, 13, 0.9);
+            color: #fff;
+            padding: 10px;
+            position: relative;
+        }
+    .generate-content {
+        border: 1px solid #aaa;
+        /*height: calc(100vh - 365px);*/
+        overflow: hidden scroll;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .content-container {
+        /*overflow: auto;*/
+        padding: 10px;
+    }
+    .generate-item {
+        margin-bottom: 40px;
+        border-bottom: 1px solid #888;
+    }
+        .generate-item h1 {
+            font-size: 24px;
+        }
+        .generate-item h2 {
+            font-size: 22px;
+        }
+        .generate-item h3 {
+            font-size: 20px;
+        }
+
+    code.python.language-python:before {
+        content: 'Python';
+        display: block;
+        background-color: #424242;
+        margin: -10px -10px 5px -10px;
+        padding: 5px 10px;
+    }
+    code.sql.language-sql:before {
+        content: 'SQL';
+        display: block;
+        background-color: #424242;
+        margin: -10px -10px 5px -10px;
+        padding: 5px 10px;
+    }
+
+    .btn-copy-code {
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: none;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        color: #e3e3e3;
+    }
+
+    .img-processing {
+        height: 80px;
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: none;
+    }
+        .img-processing img {
+            height: 100%;
+        }
+    .continue-process {
+        height: auto;
+        padding: 10px 30px 15px 20px;
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: none;
+        margin-bottom: 45px;
+    }
+        .continue-process button {
+            max-width: 100%;
+            font-size: 18px;
+        }
+            .continue-process button .next-content {
+                display: block;
+                text-wrap: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 14px;
+            }
+            .continue-process button .download-content {
+                display: block;
+                text-wrap: nowrap;
+                overflow: show;
+                text-overflow: ellipsis;
+                font-size: 14px;
+            }
+    .download-button {
+        background-color: #03c3ec;
+        color: #fff;
+        border: none;
+        padding: 10px 30px 10px 20px;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        width: 90%;
+        border-radius: 5px;
+        margin: auto;
+    }
+    .prompt-button {
+        background-color: rgba(255, 255, 255, 0.8);
+        color: #888;
+        padding: 5px 5px;
+        border: none;
+    }
+    .prompt-textbox {
+        width: 100%;
+        margin: auto;
+    }
+    .modal {
+        display: none; /* Hidden by default */
+        position: absolute; 
+        z-index: 69; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            display: flex;
+            flex-direction: row; /* Change the flex direction to row */
+            justify-content: space-between;
+        }
+        .modal-options {
+            width: 45%;
+        }
+        .modal-prompt {
+            width: 50%;
+        }
+        .modal-footer {
+        padding: 15px;
+        text-align: right;
+        border-top: 1px solid #e5e5e5;
+        }
+        .modal-footer .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .modal-footer .btn-secondary {
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;
+    }
+
+    .modal-footer .btn-primary {
+        color: #fff;
+        background-color: #337ab7;
+        border-color: #2e6da4;
+    }
+
+    .modal-footer .btn + .btn {
+        margin-left: 5px;
+    }
+
+        .prompt-display {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+        }
+    .close {
+        color: #aaa;
+        background-color: #fefefe;
+        float: right;
+        font-size: 20px;
+        font-weight: bold;
+        width: 2%;
+        border: none;
+    }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<div class="container-fluid flex-grow-1 container-p-y" style="padding-bottom: 0 !important;">
+    <div class="card">
+        <div class="d-flex align-items-end row">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <div class="process-title">Phát sinh bài giảng cho các nội dung đã chọn</div>
+                    <div class="prompt-content form-group">
+                        @* <label>Prompt cho Gemini AI: (phải có từ khóa <span style="color: #db0505">{context}</span> để đại diện cho ngữ cảnh và <span style="color: #db0505">{content}</span> để đại diện cho nội dung câu hỏi)</label>
+                        <textarea id="prompt" class="form-control" rows="3"></textarea> *@
+                    </div> 
+                        @* <input type="text", id="prompt" style="display: none;"> *@
+                    <div class="process-container row">
+                        <div class="content-list col-md-5 col-lg-4">
+                            <div class="content-title">Nội dung đã chọn</div>
+                            <div class="noi-dung-chon">
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    foreach (var content in Model)
+                                    {
+                                        if (content.Style == "Head4")
+                                        {
+                                            <p class="@content.Style"><label><input type="radio" name="noidung" id="@content.Id" parent-id="@content.IdCha" class="check-noi-dung" data-stt="@content.Stt" data-content="@(content.Stt + "/ " + content.Noidung)" data-style="@content.Style" /> @(content.Stt != "" ? content.Stt + "/" : "") @content.Noidung</label></p>
+                                        }
+                                        else
+                                        {
+                                            <p class="@content.Style"><label id="@content.Id" parent-id="@content.IdCha" class="check-noi-dung" data-stt="@content.Stt" data-content="@content.Noidung" data-style="@content.Style"> @(content.Stt != "" ? content.Stt + "/" : "") @content.Noidung<button type="button" id="@content.Id" class="prompt-button"><span style="font-size: 18px;">&#9998;</span></button></label></p>
+                                        }
+                                        <div id="myModal@(content.Id)" class="modal">
+                                            <div class="modal-content">
+                                                <div>
+                                                    <div class="modal-option">
+                                                        <p class="@content.Style"><label><input type="radio" value="default" id="@(content.Id)" class="check-noi-dung" checked />Kiến thức</label></p>
+                                                        <p class="@content.Style"><label><input type="radio" value="syntax" id="@(content.Id)" class="check-noi-dung"/>Kiến thức + Cú pháp lệnh</label></p>
+                                                        <p class="@content.Style"><label><input type="radio" value = "reference" id="@(content.Id)" class="check-noi-dung"/>Tài liệu tham khảo</label></p>
+                                                        <p class="@content.Style"><label><input type="radio" value="other" id="@content.Id" class="check-noi-dung"/>Khác:</label></p>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-prompt">
+                                                    <p align="right">
+                                                        <button type="button" id="@content.Id" class="close">x</button>
+                                                    </p>
+                                                    <h4>Prompt:</h4>
+                                                    <input type="text" class="prompt-textbox" id="@content.Id" style="display: none;">
+                                                    <textarea id="prompt" class="prompt-display"></textarea>
+                                                </div>
+
+                                            </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                                                    <button type="button" class="btn btn-primary modal-confirm">Confirm</button>
+                                                </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <div class="controls">
+                                <input type="button" id="sendRequest" value="Generate" class="btn btn-outline-info" disabled="disabled" />
+                            </div>
+                        </div>
+                        <div class="content-processing col-md-7 col-lg-8">
+                            <div class="content-title">Germini AI Generation</div>
+                            <div class="generate-content" id="generatedContainer">
+                                <div class="content-container">
+                                    <div class="generate-results" id="generatedResult">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="img-processing">
+                                <img src="~/Content/images/processing.gif" alt="" />
+                            </div>
+                            <div class="continue-process">
+                                <button type="button" id="nextRequest" class="btn btn-info">Nhấn để phát sinh tiếp <span class="next-content"></span></button>                               
+                            </div>
+                            <button type="button" id="download" class="download-button">Tải xuống</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/assets/js/markdown/showdown.min.js" type="text/javascript"></script>
+    <script src="~/assets/js/gemini-processing.js?v=1.1" type="text/javascript"></script>
+    <script>
+
+        const system_prompt = '';
+
+        const prompt1 = `Become a good Teacher, have a lot of practical experience in SQL. You will write a SQL handbook for working professionals and senior students. The document not only focuses on SQL query techniques in Google BigQuery ML but also guides learners on how to use SQL to analyze data efficiently in their work. The outline of the document as follows:
+{context}
+I'd like you to start writing the first sections, focusing particularly on the {content}.
+The content begin with the important meaning of knowing Database architecture in relational databases in Analytic data (WHY). After that, you explain WHAT - Database architecture in relational databases. Then add HOW to build Database architecture in BigQuery in Google.
+The content must be detail, easy to understand and professional that really connect with readers. Use examples to help explain complex concepts with our readers. No made assumption. Use table, image when suitable to illustrate. Give links reference for the learner can read more. Do not write any further until I instruct you to do so. Translate the result to Vietnammese`;
+        const prompt2 = `Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML.`;
+        const prompt3 = `Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML. Please provide references to the sources of information used in the document.`;
+
+        $(document).ready(function () {
+            $('#prompt').val(prompt1);
+            $('.modal').each(function() {
+                var defaultRadio = $(this).find('.check-noi-dung[value="default"]');
+                defaultRadio.prop('checked', true);
+                defaultRadio.trigger('click');
+            });
+        });
+        $('.check-noi-dung').change(function () {
+            var id = $(this).attr("id");
+            if ($(this).is(':checked')) {
+                checkChild(id);
+            }
+            else {
+                uncheckChild(id);
+            }
+        });
+        function checkChild(idParent) {
+            $('.check-noi-dung').each(function () {
+                if ($(this).attr("parent-id") == idParent) {
+                    $(this).prop('checked', true);
+                    var id = $(this).attr("id");
+                    checkChild(id);
+                }
+            });
+            displayControls();
+        }
+        function uncheckChild(idParent) {
+            $('.check-noi-dung').each(function () {
+                if ($(this).attr("parent-id") == idParent) {
+                    $(this).prop('checked', false);
+                    var id = $(this).attr("id");
+                    uncheckChild(id);
+                }
+            });
+            displayControls();
+        }
+        function displayControls() {
+            if ($('input.check-noi-dung:checked').length) {
+                $('#sendRequest').removeClass('btn-outline-info');
+                $('#sendRequest').addClass('btn-info');
+                $('#sendRequest').prop('disabled', false);
+            }
+            else {
+                $('#sendRequest').removeClass('btn-info');
+                $('#sendRequest').addClass('btn-outline-info');
+                $('#sendRequest').prop('disabled', true);
+            }
+        }
+        const arrNoiDung = [];
+        const arrId = [];
+        var nd_context = "";
+        $('#sendRequest').click(function () {
+            if ($('input.check-noi-dung:checked').length <= 0) {
+                return false;
+            }
+            $('input.check-noi-dung:checked').each(function () {
+                var id = $(this).attr("id");
+                nd_context += $(this).data("content") + "\n";
+                $('.noi-dung-chon label').each(function () {
+                    if ($(this).attr("parent-id") == id) {
+                        nd_context += $(this).text() + "\n";
+                        arrNoiDung.push($(this).text());
+                        arrId.push($(this).attr("id"));
+                    }
+                });
+            });
+            getAnswer();
+        });
+
+        $('#nextRequest').click(function () {
+            getAnswer();
+        });
+
+        $('#download').click(function() {
+            Export2Word('generatedResult');
+        });
+
+        $('.prompt-button').click(function() {
+            var id = $(this).attr("id");
+            var modal = document.getElementById("myModal" + id);
+            modal.style.display = "block";
+        });
+
+        $('.close, modal-cancel').click(function() {
+            var id = $(this).attr("id");
+            var modal = document.getElementById("myModal" + id);
+            modal.style.display = "none";;
+        });
+
+        $('.modal-confirm').click(function() {
+            var id = $(this).attr("id");
+            var modal = document.getElementById("myModal" + id);
+            modal.style.display = "none";
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('.check-noi-dung');
+    
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    radioButtons.forEach(otherRadio => {
+                        if (otherRadio !== this && otherRadio.id === this.id) {
+                            otherRadio.checked = false;
+                        }
+                    });
+                });
+            });
+        });
+
+        document.querySelectorAll('.modal').forEach(modal => {
+            const radioButtons = modal.querySelectorAll('.check-noi-dung');
+            const textbox = modal.querySelector('.prompt-textbox');
+            const promptDisplay = modal.querySelector('.prompt-display');
+
+            radioButtons.forEach(radio => {
+                radio.addEventListener('click', function() {
+                    if (this.value === 'other' && this.checked) {
+                        textbox.style.display = 'inline-block';
+                        promptDisplay.style.display = 'none';
+                    } else {
+                        textbox.style.display = 'none';
+                        promptDisplay.style.display = 'inline-block';
+                        if (this.checked) {
+                            let newPrompt = '';
+                            if (this.value === 'other') {
+                                newPrompt = textbox.value;
+                            } else if (this.value === 'default') {
+                                newPrompt = prompt1;
+                            } else if (this.value === 'syntax') {
+                                newPrompt = prompt2;
+                            } else if (this.value === 'reference') {
+                                newPrompt = prompt3;
+                            }
+                            promptDisplay.value = newPrompt;
+                        }
+                    }
+                });
+            });
+        });
+
+        function updatePrompt() {
+            var id = arrId.shift();
+            document.querySelectorAll('.modal').forEach(modal => {
+                const textbox = modal.querySelector('.prompt-textbox');
+                const radioButtons = modal.querySelectorAll('.check-noi-dung');
+
+                radioButtons.forEach(radio => {
+                    if (radio.id === id && radio.checked) {
+                        let newPrompt = '';
+                        if (radio.value === 'other') {
+                            newPrompt = textbox.value;
+                        } else if (radio.value === 'default') {
+                            newPrompt = prompt1;
+                        } else if (radio.value === 'syntax') {
+                            newPrompt = prompt2;
+                        } else if (radio.value === 'reference') {
+                            newPrompt = prompt3;
+                        }
+                        $('#prompt').val(newPrompt);
+                    }
+                });
+
+            }); 
+        }
+
+        async function getAnswer() {
+            if (nd_context != "" && arrNoiDung.length > 0) {
+                updatePrompt();
+                
+                var content = arrNoiDung.shift();
+                var question = $('#prompt').val().replace("{context}", nd_context).replace("{content}", content);
+
+                var parentid = 'generatedContainer';
+                var outputid = 'generatedItem' + $('.generate-item').length + 1;
+                var htmlResult = `<div class="generate-item" id="${outputid}"></div>`;
+                $('.generate-results').append(htmlResult);
+                $('.img-processing').show();
+                $('.continue-process').hide();
+                await sendQuestionToAgent(question, outputid, parentid)
+                $(`#${outputid} pre`).append(`<button id="btncopycode" class="btn-copy-code" onclick="copyCode(this)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" class="icon-sm"><path fill="currentColor" fill-rule="evenodd" d="M7 5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-2v2a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3h2zm2 2h5a3 3 0 0 1 3 3v5h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1zM5 9a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1z" clip-rule="evenodd"></path></svg> Copy code</button>`);
+                $('.img-processing').hide();
+                if (arrNoiDung.length > 0) {
+                    $('.continue-process').show();
+                    $('.next-content').text(arrNoiDung[0]);
+                }
+            }
+        }
+        function copyCode(el) {
+            var textToCopy = $(el).parent().find('code').html();
+            var tempTextarea = $('<textarea>');
+            $('body').append(tempTextarea);
+            textToCopy = textToCopy.replace(/\<br>/g, "\n").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+            tempTextarea.val(textToCopy.replace(/\<br>/g, "\n")).select();
+            document.execCommand('copy');
+            tempTextarea.remove();
+            var oldtext = el.innerHTML;
+            el.innerHTML = `<svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="icon-sm" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><polyline points="20 6 9 17 4 12"></polyline></svg>Copied!`;
+            setTimeout(() => {
+                el.innerHTML = oldtext;
+            }, 2000);
+        }
+        function Export2Word(element, filename = ''){
+            var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='https://www.w3.org/TR/html40/'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+            var postHtml = "</body></html>";
+            var html = preHtml+document.getElementById(element).innerHTML+postHtml;
+
+            var blob = new Blob(['\ufeff', html], {
+                type: 'application/msword'
+            });
+            
+            // Specify link url
+            var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+            
+            // Specify file name
+            filename = filename?filename+'.doc':'document.doc';
+            
+            // Create download link element
+            var downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+            
+            if(navigator.msSaveOrOpenBlob ){
+                navigator.msSaveOrOpenBlob(blob, filename);
+            }else{
+                // Create a link to the file
+                downloadLink.href = url;
+                
+                // Setting the file name
+                downloadLink.download = filename;
+                
+                //triggering the function
+                downloadLink.click();
+            }
+            
+            document.body.removeChild(downloadLink);
+        }
+    </script>
+}

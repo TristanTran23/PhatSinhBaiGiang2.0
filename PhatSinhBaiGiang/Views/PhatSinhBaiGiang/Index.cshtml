@@ -1,0 +1,179 @@
+﻿@model List<PhatSinhBaiGiang.Models.DocumentContentModel>
+@using System.Web.Mvc.Html;
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .content-title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .container-content {
+        margin-top: 15px;
+    }
+
+    .body-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 346px);
+    }
+
+    .document-content {
+        overflow: auto;
+    }
+
+    .buttons {
+        text-align: right;
+        padding-top: 10px;
+        opacity: 0;
+        height: 0;
+    }
+
+        .buttons.show {
+            opacity: 1;
+            height: auto;
+            transition: opacity 2s;
+        }
+
+    p.Head3 {
+        margin: 0 0 0 30px;
+        padding: 5px 0;
+    }
+
+    p.Head4 {
+        margin: 0 0 0 60px;
+        padding: 5px 0;
+    }
+
+    p.Head5 {
+        margin: 0 0 0 90px;
+        padding: 5px 0;
+    }
+
+    p label {
+        cursor: pointer;
+    }
+
+        p label:hover {
+            color: #db0505;
+        }
+</style>
+
+<div class="container-fluid flex-grow-1 container-p-y">
+    <div class="card">
+        <div class="d-flex align-items-end row">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <h2 style="color:#FD6504; font-size:20px">Phát sinh bài giảng từ tập tin Cẩm nang bài giảng</h2>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div>Đọc nội dung cẩm nang</div>
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="row m-0 p-0" style="align-items: center;">
+                                    <div class="col-md-2" style="text-align: right;">Chọn tập tin Word</div>
+                                    <div class="col-md-10" style="padding:5px">
+                                        <input class="form-control" type="file" id="fileUpload" name="fileUpload" accept=".doc,.docx" style="max-width: 600px; display: inline-block;" />
+                                        <input type="submit" class="btn btn-info" value="Upload file" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-content">
+        <div class="card">
+            <div class="d-flex align-items-end row">
+                <div class="col-md-12">
+                    @using (Html.BeginForm("GeminiProcess", "PhatSinhBaiGiang", FormMethod.Post))
+                    {
+                        <div class="card-body body-container">
+                            <div class="document-content">
+                                @if (Model == null)
+                                {
+                                    <div class="content-title">Vui lòng Upload tập tin cẩm nang nội dung môn học</div>
+                                }
+                                else if (Model.Count == 0)
+                                {
+                                    <div class="content-title">Tập tin cẩm nang không đúng định dạng</div>
+                                    <p style=" text-align: center; padding: 10px 0;">Tập tin sử dụng style <span style="color: #f00">Head3</span>, <span style="color: #f00">Head4</span> và <span style="color: #f00">Head5</span> để định dạng nội dung. Tham khảo file mẫu <a href="~/template/cam-nang-mau.docx" download="cam-nang-mau.docx" style="font-weight: 600;">tại đây</a></p>
+                                }
+                                else
+                                {
+                                    <div class="content-title">Nội dung cẩm nang môn học</div>
+                                    foreach (var content in Model)
+                                    {
+                                        <p class="@content.Style"><label><input type="checkbox" id="@content.Id" parent-id="@content.IdCha" class="check-noi-dung" data-stt="@content.Stt" data-content="@content.Noidung" data-style="@content.Style" /> @(content.Stt != "" ? content.Stt + "/" : "") @content.Noidung</label></p>
+                                    }
+                                }
+                            </div>
+                            <div class="buttons">
+                                <input type="submit" class="btn btn-primary" value="Phát sinh">
+                                <input type="hidden" id="noidungchon" name="noidungchon" value="" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $('.check-noi-dung').change(function () {
+            var id = $(this).attr("id");
+            if ($(this).is(':checked')) {
+                checkChild(id);
+            }
+            else {
+                uncheckChild(id);
+            }
+        });
+        function checkChild(idParent) {
+            $('.check-noi-dung').each(function () {
+                if ($(this).attr("parent-id") == idParent) {
+                    $(this).prop('checked', true);
+                    var id = $(this).attr("id");
+                    checkChild(id);
+                }
+            });
+            displayControls();
+        }
+        function uncheckChild(idParent) {
+            $('.check-noi-dung').each(function () {
+                if ($(this).attr("parent-id") == idParent) {
+                    $(this).prop('checked', false);
+                    var id = $(this).attr("id");
+                    uncheckChild(id);
+                }
+            });
+            displayControls();
+        }
+        function displayControls() {
+            var ndchon = "";
+            $('input.check-noi-dung:checked').each(function () {
+                var nd = `{"Id": ${$(this).attr("id")}, "Stt": ${$(this).data("stt")}, "Style": "${$(this).data("style")}", "Noidung": "${$(this).data("content")}", "IdCha": ${$(this).attr("parent-id")}}`;
+                ndchon += nd + ",";
+            });
+            if (ndchon != "") {
+                ndchon = '[' + ndchon + ']';
+            }
+            $('#noidungchon').val(ndchon);
+            if ($('input.check-noi-dung:checked').length) {
+                $('div.buttons').addClass('show');
+            }
+            else {
+                $('div.buttons').removeClass('show');
+            }
+            //if ($('input.check-noi-dung:checked').length)
+            //    $('div.buttons input').addClass('show');
+            //else
+            //    $('div.buttons input').removeClass('show');
+        }
+    </script>
+}
