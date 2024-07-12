@@ -203,7 +203,8 @@
     }
     .prompt-textbox {
         width: 100%;
-        margin: auto;
+        height: 150px;
+        margin-top: 10px;
     }
     .modal {
         display: none; /* Hidden by default */
@@ -337,7 +338,7 @@
                                                         <button type="button" id="@content.Id" class="close">x</button>
                                                     </p>
                                                     <h4>Prompt:</h4>
-                                                    <input type="text" class="prompt-textbox" id="@content.Id" style="display: none;">
+                                                    <textarea type="text" class="prompt-textbox" id="@content.Id" style="display: none;"></textarea>
                                                     <textarea id="prompt" class="prompt-display"></textarea>
                                                     <div class="modal-footer">
                                                         <button type="button" id="@content.Id" class="modal-cancel">Cancel</button>
@@ -395,6 +396,7 @@ The content must be detail, easy to understand and professional that really conn
             $('#prompt').val(prompt1);
             $('.modal').each(function() {
                 var defaultRadio = $(this).find('.check-noi-dung[value="default"]');
+                defaultRadio.prop('checked', true);
                 defaultRadio.trigger('click');
             });
 
