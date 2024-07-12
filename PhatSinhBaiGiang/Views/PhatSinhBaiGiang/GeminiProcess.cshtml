@@ -394,6 +394,32 @@ The content must be detail, easy to understand and professional that really conn
                 defaultRadio.prop('checked', true);
                 defaultRadio.trigger('click');
             });
+
+            $(document).on('click', '.prompt-button', function() {
+                var id = $(this).attr("id");
+                var modal = document.getElementById("myModal" + id);
+                modal.style.display = "block";
+                originalState[id] = saveOriginalState(modal);
+            });
+
+            $(document).on('click', '.close', function() {
+                var id = $(this).attr("id");
+                var modal = document.getElementById("myModal" + id);
+                modal.style.display = "none";
+            });
+
+            $(document).on('click', '.modal-confirm', function() {
+                var id = $(this).attr("id");
+                var modal = document.getElementById("myModal" + id);
+                modal.style.display = "none";
+            });
+
+            $(document).on('click', '.modal-cancel', function() {
+                var id = $(this).attr("id");
+                var modal = document.getElementById("myModal" + id);
+                restoreOriginalState(modal, originalState[id]); 
+                modal.style.display = "none";
+            });
         });
         $('.check-noi-dung').change(function () {
             var id = $(this).attr("id");
@@ -465,16 +491,19 @@ The content must be detail, easy to understand and professional that really conn
             Export2Word('generatedResult');
         });
 
+        var originalState = {};
+
         $('.prompt-button').click(function() {
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
             modal.style.display = "block";
+            originalState = saveOriginalState(modal);
         });
 
         $('.close').click(function() {
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
-            modal.style.display = "none";;
+            modal.style.display = "none";
         });
 
         $('.modal-confirm').click(function() {
@@ -483,11 +512,12 @@ The content must be detail, easy to understand and professional that really conn
             modal.style.display = "none";
         });
 
-        @* $('.modal-cancel').click(function() {
+        $('.modal-cancel').click(function() {
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
+            restoreOriginalState(modal, originalState); 
             modal.style.display = "none";
-        }); *@
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
             const radioButtons = document.querySelectorAll('.check-noi-dung');
@@ -507,6 +537,7 @@ The content must be detail, easy to understand and professional that really conn
             const radioButtons = modal.querySelectorAll('.check-noi-dung');
             const textbox = modal.querySelector('.prompt-textbox');
             const promptDisplay = modal.querySelector('.prompt-display');
+            const cancelButton = modal.querySelector('.modal-cancel');
 
             radioButtons.forEach(radio => {
                 radio.addEventListener('click', function() {
@@ -533,6 +564,40 @@ The content must be detail, easy to understand and professional that really conn
                 });
             });
         });
+
+        function saveOriginalState(modal) {
+            const radioButtons = modal.querySelectorAll('.check-noi-dung');
+            const textbox = modal.querySelector('.prompt-textbox');
+            const promptDisplay = modal.querySelector('.prompt-display');
+
+            return{
+                checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
+                textboxValue: textbox.value,
+                promptDisplayValue: promptDisplay.value
+            };
+        }
+
+        function restoreOriginalState(modal, originalState) {
+            if (!originalState) {
+                return;
+            }
+
+            const radioButtons = modal.querySelectorAll('.check-noi-dung');
+            const textbox = modal.querySelector('.prompt-textbox');
+            const promptDisplay = modal.querySelector('.prompt-display');
+
+            radioButtons.forEach(radio => {
+                radio.checked = radio === originalState.checkedRadio;
+            });
+            textbox.value = originalState.textboxValue;
+            promptDisplay.value = originalState.promptDisplayValue;
+
+            radioButtons.forEach(radio => {
+                if (radio.checked) {
+                    $(radio).trigger('change');
+                }
+            })
+        }
 
         function updatePrompt() {
             var id = arrId.shift();
