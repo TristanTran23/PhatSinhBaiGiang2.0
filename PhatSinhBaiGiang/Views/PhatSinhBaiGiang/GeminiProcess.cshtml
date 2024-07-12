@@ -253,13 +253,13 @@
         border-radius: 4px;
     }
 
-    .modal-footer .btn-secondary {
+    .modal-cancel {
         color: #333;
         background-color: #fff;
         border-color: #ccc;
     }
 
-    .modal-footer .btn-primary {
+    .modal-confirm {
         color: #fff;
         background-color: #337ab7;
         border-color: #2e6da4;
@@ -335,13 +335,12 @@
                                                     <h4>Prompt:</h4>
                                                     <input type="text" class="prompt-textbox" id="@content.Id" style="display: none;">
                                                     <textarea id="prompt" class="prompt-display"></textarea>
+                                                    <div class="modal-footer">
+                                                        <button type="button" id="@content.Id" class="modal-cancel">Cancel</button>
+                                                        <button type="button" id="@content.Id" class="modal-confirm">Confirm</button>
+                                                    </div>
                                                 </div>
-
                                             </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
-                                                    <button type="button" class="btn btn-primary modal-confirm">Confirm</button>
-                                                </div>
                                         </div>
                                     }
                                 }
@@ -394,6 +393,32 @@ The content must be detail, easy to understand and professional that really conn
                 var defaultRadio = $(this).find('.check-noi-dung[value="default"]');
                 defaultRadio.prop('checked', true);
                 defaultRadio.trigger('click');
+            });
+
+            $(document).on('click', '.prompt-button', function() {
+                var id = $(this).attr("id");
+                var modal = document.getElementById("myModal" + id);
+                modal.style.display = "block";
+                originalState[id] = saveOriginalState(modal);
+            });
+
+            $(document).on('click', '.close', function() {
+                var id = $(this).attr("id");
+                var modal = document.getElementById("myModal" + id);
+                modal.style.display = "none";
+            });
+
+            $(document).on('click', '.modal-confirm', function() {
+                var id = $(this).attr("id");
+                var modal = document.getElementById("myModal" + id);
+                modal.style.display = "none";
+            });
+
+            $(document).on('click', '.modal-cancel', function() {
+                var id = $(this).attr("id");
+                var modal = document.getElementById("myModal" + id);
+                restoreOriginalState(modal, originalState[id]); 
+                modal.style.display = "none";
             });
         });
         $('.check-noi-dung').change(function () {
@@ -466,21 +491,31 @@ The content must be detail, easy to understand and professional that really conn
             Export2Word('generatedResult');
         });
 
+        var originalState = {};
+
         $('.prompt-button').click(function() {
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
             modal.style.display = "block";
+            originalState = saveOriginalState(modal);
         });
 
-        $('.close, modal-cancel').click(function() {
+        $('.close').click(function() {
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
-            modal.style.display = "none";;
+            modal.style.display = "none";
         });
 
         $('.modal-confirm').click(function() {
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
+            modal.style.display = "none";
+        });
+
+        $('.modal-cancel').click(function() {
+            var id = $(this).attr("id");
+            var modal = document.getElementById("myModal" + id);
+            restoreOriginalState(modal, originalState); 
             modal.style.display = "none";
         });
 
@@ -502,6 +537,7 @@ The content must be detail, easy to understand and professional that really conn
             const radioButtons = modal.querySelectorAll('.check-noi-dung');
             const textbox = modal.querySelector('.prompt-textbox');
             const promptDisplay = modal.querySelector('.prompt-display');
+            const cancelButton = modal.querySelector('.modal-cancel');
 
             radioButtons.forEach(radio => {
                 radio.addEventListener('click', function() {
@@ -528,6 +564,40 @@ The content must be detail, easy to understand and professional that really conn
                 });
             });
         });
+
+        function saveOriginalState(modal) {
+            const radioButtons = modal.querySelectorAll('.check-noi-dung');
+            const textbox = modal.querySelector('.prompt-textbox');
+            const promptDisplay = modal.querySelector('.prompt-display');
+
+            return{
+                checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
+                textboxValue: textbox.value,
+                promptDisplayValue: promptDisplay.value
+            };
+        }
+
+        function restoreOriginalState(modal, originalState) {
+            if (!originalState) {
+                return;
+            }
+
+            const radioButtons = modal.querySelectorAll('.check-noi-dung');
+            const textbox = modal.querySelector('.prompt-textbox');
+            const promptDisplay = modal.querySelector('.prompt-display');
+
+            radioButtons.forEach(radio => {
+                radio.checked = radio === originalState.checkedRadio;
+            });
+            textbox.value = originalState.textboxValue;
+            promptDisplay.value = originalState.promptDisplayValue;
+
+            radioButtons.forEach(radio => {
+                if (radio.checked) {
+                    $(radio).trigger('change');
+                }
+            })
+        }
 
         function updatePrompt() {
             var id = arrId.shift();
