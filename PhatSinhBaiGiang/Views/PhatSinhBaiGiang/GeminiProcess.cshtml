@@ -229,6 +229,7 @@
         }
         .modal-options {
             width: 45%;
+            margin-top: 50px;
         }
         .modal-prompt {
             width: 50%;
@@ -289,6 +290,9 @@
             text-decoration: none;
             cursor: pointer;
         }
+    .no-wrap {
+        white-space: nowrap;
+    }
 </style>
 
 <div class="container-fluid flex-grow-1 container-p-y" style="padding-bottom: 0 !important;">
@@ -298,8 +302,8 @@
                 <div class="card-body">
                     <div class="process-title">Phát sinh bài giảng cho các nội dung đã chọn</div>
                     <div class="prompt-content form-group">
-                        @* <label>Prompt cho Gemini AI: (phải có từ khóa <span style="color: #db0505">{context}</span> để đại diện cho ngữ cảnh và <span style="color: #db0505">{content}</span> để đại diện cho nội dung câu hỏi)</label>
-                        <textarea id="prompt" class="form-control" rows="3"></textarea> *@
+                        @* <label>Prompt cho Gemini AI: (phải có từ khóa <span style="color: #db0505">{context}</span> để đại diện cho ngữ cảnh và <span style="color: #db0505">{content}</span> để đại diện cho nội dung câu hỏi)</label> *@
+                        <textarea id="system-prompt" class="form-control" rows="3"></textarea>
                     </div> 
                         @* <input type="text", id="prompt" style="display: none;"> *@
                     <div class="process-container row">
@@ -321,11 +325,11 @@
                                         <div id="myModal@(content.Id)" class="modal">
                                             <div class="modal-content">
                                                 <div>
-                                                    <div class="modal-option">
-                                                        <p class="@content.Style"><label><input type="radio" value="default" id="@(content.Id)" class="check-noi-dung" checked />Kiến thức</label></p>
-                                                        <p class="@content.Style"><label><input type="radio" value="syntax" id="@(content.Id)" class="check-noi-dung"/>Kiến thức + Cú pháp lệnh</label></p>
-                                                        <p class="@content.Style"><label><input type="radio" value = "reference" id="@(content.Id)" class="check-noi-dung"/>Tài liệu tham khảo</label></p>
-                                                        <p class="@content.Style"><label><input type="radio" value="other" id="@content.Id" class="check-noi-dung"/>Khác:</label></p>
+                                                    <div class="modal-options">
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="default" id="@(content.Id)" class="check-noi-dung"/>Kiến thức</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="syntax" id="@(content.Id)" class="check-noi-dung"/>Kiến thức + Cú pháp lệnh</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="reference" id="@(content.Id)" class="check-noi-dung"/>Tài liệu tham khảo</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="other" id="@(content.Id)" class="check-noi-dung"/>Khác:</label></p>
                                                     </div>
                                                 </div>
                                                 <div class="modal-prompt">
@@ -395,31 +399,7 @@ The content must be detail, easy to understand and professional that really conn
                 defaultRadio.trigger('click');
             });
 
-            $(document).on('click', '.prompt-button', function() {
-                var id = $(this).attr("id");
-                var modal = document.getElementById("myModal" + id);
-                modal.style.display = "block";
-                originalState[id] = saveOriginalState(modal);
-            });
-
-            $(document).on('click', '.close', function() {
-                var id = $(this).attr("id");
-                var modal = document.getElementById("myModal" + id);
-                modal.style.display = "none";
-            });
-
-            $(document).on('click', '.modal-confirm', function() {
-                var id = $(this).attr("id");
-                var modal = document.getElementById("myModal" + id);
-                modal.style.display = "none";
-            });
-
-            $(document).on('click', '.modal-cancel', function() {
-                var id = $(this).attr("id");
-                var modal = document.getElementById("myModal" + id);
-                restoreOriginalState(modal, originalState[id]); 
-                modal.style.display = "none";
-            });
+            $('#system-prompt').val(system_prompt);
         });
         $('.check-noi-dung').change(function () {
             var id = $(this).attr("id");
@@ -670,30 +650,26 @@ The content must be detail, easy to understand and professional that really conn
             });
             
             // Specify link url
-            var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+            var url = window.URL.createObjectURL(blob);
             
             // Specify file name
             filename = filename?filename+'.doc':'document.doc';
             
             // Create download link element
             var downloadLink = document.createElement("a");
-
             document.body.appendChild(downloadLink);
             
-            if(navigator.msSaveOrOpenBlob ){
-                navigator.msSaveOrOpenBlob(blob, filename);
-            }else{
-                // Create a link to the file
-                downloadLink.href = url;
-                
-                // Setting the file name
-                downloadLink.download = filename;
-                
-                //triggering the function
-                downloadLink.click();
-            }
+            // Create a link to the file
+            downloadLink.href = url;
+            
+            // Setting the file name
+            downloadLink.download = filename;
+            
+            //triggering the function
+            downloadLink.click();
             
             document.body.removeChild(downloadLink);
+            window.URL.revokeObjectURL(url);
         }
     </script>
 }
