@@ -338,8 +338,8 @@
                                                         <button type="button" id="@content.Id" class="close">x</button>
                                                     </p>
                                                     <h4>Prompt:</h4>
-                                                    <input type="text" class="prompt-textbox" id="@content.Id" style="display: none;">
-                                                    <textarea id="prompt" class="prompt-display"></textarea>
+                                                    <textarea type="text" class="prompt-textbox" id="@content.Id" style="display: none;"></textarea>
+                                                    <textarea type="text" id="prompt" class="prompt-display"></textarea>
                                                     <div class="modal-footer">
                                                         <button type="button" id="@content.Id" class="modal-cancel">Cancel</button>
                                                         <button type="button" id="@content.Id" class="modal-confirm">Confirm</button>
@@ -485,12 +485,14 @@ The content must be detail, easy to understand and professional that really conn
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
             modal.style.display = "none";
+            originalState = saveOriginalState(modal);
         });
 
         $('.modal-confirm').click(function() {
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
             modal.style.display = "none";
+            originalState = saveOriginalState(modal);
         });
 
         $('.modal-cancel').click(function() {
