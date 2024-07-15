@@ -411,6 +411,7 @@ The content must be detail, easy to understand and professional that really conn
                 uncheckChild(id);
             }
         });
+
         function checkChild(idParent) {
             $('.check-noi-dung').each(function () {
                 if ($(this).attr("parent-id") == idParent) {
@@ -443,9 +444,12 @@ The content must be detail, easy to understand and professional that really conn
                 $('#sendRequest').prop('disabled', true);
             }
         }
+
         const arrNoiDung = [];
         const arrId = [];
         var nd_context = "";
+        var originalState = {};
+
         $('#sendRequest').click(function () {
             if ($('input.check-noi-dung:checked').length <= 0) {
                 return false;
@@ -468,11 +472,9 @@ The content must be detail, easy to understand and professional that really conn
             getAnswer();
         });
 
-        $('#download').click(function() {
-            Export2Word('generatedResult');
+        $('#download').click(async function() {
+            await Export2Word();
         });
-
-        var originalState = {};
 
         $('.prompt-button').click(function() {
             var id = $(this).attr("id");
@@ -643,36 +645,68 @@ The content must be detail, easy to understand and professional that really conn
                 el.innerHTML = oldtext;
             }, 2000);
         }
-        function Export2Word(element, filename = ''){
-            var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='https://www.w3.org/TR/html40/'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
-            var postHtml = "</body></html>";
-            var html = preHtml+document.getElementById(element).innerHTML+postHtml;
+        async function Export2Word() {
+            var content = document.getElementById('generatedResult').innerHTML;
+            
+            // Wrap the content in Word-compatible HTML
+            var wordContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>Generated Result</title>
+                </head>
+                <body>
+                    ${content}
+                </body>
+                </html>
+            `;
 
-            var blob = new Blob(['\ufeff', html], {
-                type: 'application/msword'
-            });
-            
-            // Specify link url
-            var url = window.URL.createObjectURL(blob);
-            
-            // Specify file name
-            filename = filename?filename+'.doc':'document.doc';
-            
-            // Create download link element
-            var downloadLink = document.createElement("a");
-            document.body.appendChild(downloadLink);
-            
-            // Create a link to the file
-            downloadLink.href = url;
-            
-            // Setting the file name
-            downloadLink.download = filename;
-            
-            //triggering the function
-            downloadLink.click();
-            
-            document.body.removeChild(downloadLink);
-            window.URL.revokeObjectURL(url);
+            // Create a Blob with the Word-compatible content
+            var blob = new Blob([wordContent], {type: 'application/msword'});
+
+            // Check if the browser supports the File System Access API
+            if ('showSaveFilePicker' in window) {
+                try {
+                    // Show the file picker
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'generated_result.doc',
+                        types: [{
+                            description: 'Word Document',
+                            accept: {'application/msword': ['.doc']},
+                        }],
+                    });
+
+                    // Create a FileSystemWritableFileStream to write to
+                    const writable = await handle.createWritable();
+
+                    // Write the contents of the file to the stream
+                    await writable.write(blob);
+
+                    // Close the file and write the contents to disk
+                    await writable.close();
+
+                } catch (err) {
+                    // The user probably aborted the save
+                    console.error('Error saving the file:', err);
+                }
+            } else {
+                // Fallback for browsers that don't support the File System Access API
+                alert('Your browser does not support the File System Access API. The file will be downloaded using the default method.');
+                
+                if (typeof saveAs === 'function') {
+                    saveAs(blob, "document.doc");
+                } else {
+                    // Basic fallback method
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    link.href = url;
+                    link.download = "documen.doc";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                }
+            }
         }
     </script>
 }
