@@ -187,7 +187,7 @@
         background-color: #03c3ec;
         color: #fff;
         border: none;
-        padding: 10px 30px 10px 20px;
+        padding: 10px 30px 10px 30px;
         font-size: 16px;
         margin-top: 10px;
         cursor: pointer;
@@ -261,19 +261,32 @@
     .modal-cancel {
         color: #333;
         background-color: #fff;
-        border-color: #ccc;
+        border: none;
+        border-radius: 5px;
     }
 
     .modal-confirm {
         color: #fff;
         background-color: #337ab7;
-        border-color: #2e6da4;
+        border: none;
+        border-radius: 5px;
     }
 
     .modal-footer .btn + .btn {
         margin-left: 5px;
     }
-
+    .download-prompt {
+        background-color: #03c3ec;
+        color: #fff;
+        border: none;
+        padding: 8px 30px 8px 30px;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        width: auto;
+        border-radius: 6px;
+        margin: auto;
+    }
         .prompt-display {
             width: 100%;
             height: 150px;
@@ -342,11 +355,7 @@
                                                     </p>
                                                     <h4>Prompt:</h4>
                                                     <textarea type="text" class="prompt-textbox" id="@content.Id" style="display: none;"></textarea>
-<<<<<<< HEAD
-                                                    <textarea id="prompt" class="prompt-display"></textarea>
-=======
                                                     <textarea type="text" id="prompt" class="prompt-display"></textarea>
->>>>>>> 3bc1a9c5dcf03975f418dbd678f9350249216845
                                                     <div class="modal-footer">
                                                         <button type="button" id="@content.Id" class="modal-cancel">Cancel</button>
                                                         <button type="button" id="@content.Id" class="modal-confirm">Confirm</button>
@@ -359,6 +368,7 @@
                             </div>
                             <div class="controls">
                                 <input type="button" id="sendRequest" value="Generate" class="btn btn-outline-info" disabled="disabled" />
+                                <input type="button" id="exportPrompt" value="Export Prompt" class="download-prompt"/>
                             </div>
                         </div>
                         <div class="content-processing col-md-7 col-lg-8">
@@ -456,6 +466,7 @@ The content must be detail, easy to understand and professional that really conn
         const arrId = [];
         var nd_context = "";
         var originalState = {};
+        var promptList = [];
 
         $('#sendRequest').click(function () {
             if ($('input.check-noi-dung:checked').length <= 0) {
@@ -509,6 +520,13 @@ The content must be detail, easy to understand and professional that really conn
             var modal = document.getElementById("myModal" + id);
             restoreOriginalState(modal, originalState); 
             modal.style.display = "none";
+        });
+
+        $('.download-prompt').click(async function() {
+            @* document.querySelectAll('.modal').forEach(modal => {
+                await saveOriginalState(modal);
+            }) *@
+            await exportPrompt();
         });
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -708,6 +726,45 @@ The content must be detail, easy to understand and professional that really conn
                     var link = document.createElement("a");
                     link.href = url;
                     link.download = "documen.doc";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                }
+            }
+        }
+        
+        async function exportPrompt() {
+            const jsonString = JSON.stringify(originalState, null, 2);
+            const blob = new Blob([jsonString], {type: 'application/json'});
+
+            if ('showSaveFilePicker' in window) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'prompt.json',
+                        types: [{
+                            description: 'JSON File',
+                            accept: {'application/json': ['.json']},
+                        }],
+                    });
+
+                    const writable = await handle.createWritable();
+                    await writable.write(blob);
+                    await writable.close();
+
+                } catch (err) {
+                    console.error('Error saving the file:', err);
+                }
+            } else {
+                alert('Your browser does not support the File System Access API. The file will be downloaded using the default method.');
+                
+                if (typeof saveAs === 'function') {
+                    saveAs(blob, "prompt.json");
+                } else {
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    link.href = url;
+                    link.download = "prompt.json";
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
