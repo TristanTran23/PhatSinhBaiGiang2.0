@@ -206,6 +206,9 @@
         height: 150px;
         margin-top: 10px;
     }
+    .prompt-option {
+
+    }
     .modal {
         display: none; /* Hidden by default */
         position: absolute; 
@@ -340,10 +343,10 @@
                                             <div class="modal-content">
                                                 <div>
                                                     <div class="modal-options">
-                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="default" id="@(content.Id)" class="check-noi-dung"/>Kiến thức</label></p>
-                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="syntax" id="@(content.Id)" class="check-noi-dung"/>Kiến thức + Cú pháp lệnh</label></p>
-                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="reference" id="@(content.Id)" class="check-noi-dung"/>Tài liệu tham khảo</label></p>
-                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="other" id="@(content.Id)" class="check-noi-dung"/>Khác:</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="default" id="@(content.Id)" class="prompt-option"/>Kiến thức</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="syntax" id="@(content.Id)" class="prompt-option"/>Kiến thức + Cú pháp lệnh</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="reference" id="@(content.Id)" class="prompt-option"/>Tài liệu tham khảo</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="other" id="@(content.Id)" class="prompt-option"/>Khác:</label></p>
                                                     </div>
                                                 </div>
                                                 <div class="modal-prompt">
@@ -409,7 +412,7 @@ The content must be detail, easy to understand and professional that really conn
         $(document).ready(function () {
             $('#prompt').val(prompt1);
             $('.modal').each(function() {
-                var defaultRadio = $(this).find('.check-noi-dung[value="default"]');
+                var defaultRadio = $(this).find('.prompt-option[value="default"]');
                 defaultRadio.prop('checked', true);
                 defaultRadio.trigger('click');
             });
@@ -527,7 +530,7 @@ The content must be detail, easy to understand and professional that really conn
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            const radioButtons = document.querySelectorAll('.check-noi-dung');
+            const radioButtons = document.querySelectorAll('.prompt-option');
     
             radioButtons.forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -541,7 +544,7 @@ The content must be detail, easy to understand and professional that really conn
         });
 
         document.querySelectorAll('.modal').forEach(modal => {
-            const radioButtons = modal.querySelectorAll('.check-noi-dung');
+            const radioButtons = modal.querySelectorAll('.prompt-option');
             const textbox = modal.querySelector('.prompt-textbox');
             const promptDisplay = modal.querySelector('.prompt-display');
             const cancelButton = modal.querySelector('.modal-cancel');
@@ -573,7 +576,7 @@ The content must be detail, easy to understand and professional that really conn
         });
 
         function saveOriginalState(modal) {
-            const radioButtons = modal.querySelectorAll('.check-noi-dung');
+            const radioButtons = modal.querySelectorAll('.prompt-option');
             const textbox = modal.querySelector('.prompt-textbox');
             const promptDisplay = modal.querySelector('.prompt-display');
 
@@ -589,7 +592,7 @@ The content must be detail, easy to understand and professional that really conn
                 return;
             }
 
-            const radioButtons = modal.querySelectorAll('.check-noi-dung');
+            const radioButtons = modal.querySelectorAll('.prompt-option');
             const textbox = modal.querySelector('.prompt-textbox');
             const promptDisplay = modal.querySelector('.prompt-display');
 
@@ -610,7 +613,7 @@ The content must be detail, easy to understand and professional that really conn
             var id = arrId.shift();
             document.querySelectorAll('.modal').forEach(modal => {
                 const textbox = modal.querySelector('.prompt-textbox');
-                const radioButtons = modal.querySelectorAll('.check-noi-dung');
+                const radioButtons = modal.querySelectorAll('.prompt-option');
 
                 radioButtons.forEach(radio => {
                     if (radio.id === id && radio.checked) {
