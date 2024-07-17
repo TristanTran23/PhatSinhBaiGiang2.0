@@ -399,18 +399,30 @@
     <script src="~/assets/js/gemini-processing.js?v=1.1" type="text/javascript"></script>
     <script>
 
-        const system_prompt = 'From now you are a SQL Teacher, have a lot of practical experience and high pedagogical skill, can explain knowledge in many ways to easy understand to learner, inspire learner. "SQL for Data Analytics" is first module in Data Analytics Certificate. The learners almost are working professionals and senior students.  You update your chat information only, no create content. I will give you syllabus for module after that';
+        var system_prompt = 'From now you are a SQL Teacher, have a lot of practical experience and high pedagogical skill, can explain knowledge in many ways to easy understand to learner, inspire learner. "SQL for Data Analytics" is first module in Data Analytics Certificate. The learners almost are working professionals and senior students.  You update your chat information only, no create content. I will give you syllabus for module after that';
 
-        var prompt1 = `{systemPrompt} Become a good Teacher, have a lot of practical experience in SQL. You will write a SQL handbook for working professionals and senior students. The document not only focuses on SQL query techniques in Google BigQuery ML but also guides learners on how to use SQL to analyze data efficiently in their work. The outline of the document as follows:
+        var prompt1 = {0:`{systemPrompt} Become a good Teacher, have a lot of practical experience in SQL. You will write a SQL handbook for working professionals and senior students. The document not only focuses on SQL query techniques in Google BigQuery ML but also guides learners on how to use SQL to analyze data efficiently in their work. The outline of the document as follows:
 {context}
 I'd like you to start writing the first sections, focusing particularly on the {content}.
 The content begin with the important meaning of knowing Database architecture in relational databases in Analytic data (WHY). After that, you explain WHAT - Database architecture in relational databases. Then add HOW to build Database architecture in BigQuery in Google.
-The content must be detail, easy to understand and professional that really connect with readers. Use examples to help explain complex concepts with our readers. No made assumption. Use table, image when suitable to illustrate. Give links reference for the learner can read more. Do not write any further until I instruct you to do so. Translate the result to Vietnammese`;
-        var prompt2 = `{systemPrompt} Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML.`;
-        var prompt3 = `{systemPrompt} Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML. Please provide references to the sources of information used in the document.`;
+The content must be detail, easy to understand and professional that really connect with readers. Use examples to help explain complex concepts with our readers. No made assumption. Use table, image when suitable to illustrate. Give links reference for the learner can read more. Do not write any further until I instruct you to do so. Translate the result to Vietnammese`};
+        var prompt2 = {0:`{systemPrompt} Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML.`};
+        var prompt3 = {0:`{systemPrompt} Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML. Please provide references to the sources of information used in the document.`};
 
         $(document).ready(function () {
-            $('#prompt').val(prompt1);
+            document.querySelectorAll('.modal').forEach(modal => {
+                const id = modal.id.replace('myModal', '');
+                if (!prompt1[id]) {
+                    prompt1[id] = prompt1[0];
+                }
+                if (!prompt2[id]) {
+                    prompt2[id] = prompt2[0];
+                }
+                if (!prompt3[id]) {
+                    prompt3[id] = prompt3[0];
+                }
+            });
+            $('#prompt').val(prompt1[0]);
             $('.modal').each(function() {
                 var defaultRadio = $(this).find('.prompt-option[value="default"]');
                 defaultRadio.prop('checked', true);
@@ -523,9 +535,6 @@ The content must be detail, easy to understand and professional that really conn
         });
 
         $('.download-prompt').click(async function() {
-            @* document.querySelectAll('.modal').forEach(modal => {
-                await saveOriginalState(modal);
-            }) *@
             await exportPrompt();
         });
 
@@ -542,6 +551,26 @@ The content must be detail, easy to understand and professional that really conn
                 });
             });
         });
+        document.querySelectorAll('.modal').forEach(modal => {
+            const radioButtons = modal.querySelectorAll('.prompt-option');
+            const textbox = modal.querySelector('.prompt-textbox');
+            const promptDisplay = modal.querySelector('.prompt-display');
+            const cancelButton = modal.querySelector('.modal-cancel');
+
+            promptDisplay.addEventListener('input', function() {
+                const checkedRadio = Array.from(radioButtons).find(radio => radio.checked);
+                if (checkedRadio) {
+                    let id = checkedRadio.id;
+                    if (checkedRadio.value === 'default') {
+                        prompt1[id] = this.value;
+                    } else if (checkedRadio.value === 'syntax') {
+                        prompt2[id] = this.value;
+                    } else if (checkedRadio.value === 'reference') {
+                        prompt3[id] = this.value;
+                    }
+                }
+            });
+        }); 
 
         document.querySelectorAll('.modal').forEach(modal => {
             const radioButtons = modal.querySelectorAll('.prompt-option');
@@ -558,15 +587,17 @@ The content must be detail, easy to understand and professional that really conn
                         textbox.style.display = 'none';
                         promptDisplay.style.display = 'inline-block';
                         if (this.checked) {
+                            let id = radio.id;
                             let newPrompt = '';
+                            
                             if (this.value === 'other') {
                                 newPrompt = textbox.value;
                             } else if (this.value === 'default') {
-                                newPrompt = prompt1;
+                                newPrompt = prompt1[id];
                             } else if (this.value === 'syntax') {
-                                newPrompt = prompt2;
+                                newPrompt = prompt2[id];
                             } else if (this.value === 'reference') {
-                                newPrompt = prompt3;
+                                newPrompt = prompt3[id];
                             }
                             promptDisplay.value = newPrompt;
                         }
@@ -617,15 +648,17 @@ The content must be detail, easy to understand and professional that really conn
 
                 radioButtons.forEach(radio => {
                     if (radio.id === id && radio.checked) {
+                        let id = radio.id;
                         let newPrompt = '';
+                        
                         if (radio.value === 'other') {
                             newPrompt = textbox.value;
                         } else if (radio.value === 'default') {
-                            newPrompt = prompt1;
+                            newPrompt = prompt1[id];
                         } else if (radio.value === 'syntax') {
-                            newPrompt = prompt2;
+                            newPrompt = prompt2[id];
                         } else if (radio.value === 'reference') {
-                            newPrompt = prompt3;
+                            newPrompt = prompt3[id];
                         }
                         $('#prompt').val(newPrompt);
                     }
