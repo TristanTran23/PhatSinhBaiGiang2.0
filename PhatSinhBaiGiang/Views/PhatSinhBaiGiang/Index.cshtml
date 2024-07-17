@@ -134,6 +134,14 @@
                 uncheckChild(id);
             }
         });
+
+        $('.check-noi-dung').each(function () {
+            if (!$(this).attr('data-stt')) {
+                $(this).prop('checked', false);
+                $(this).prop('disabled', true);
+            }
+        });
+
         function checkChild(idParent) {
             $('.check-noi-dung').each(function () {
                 if ($(this).attr("parent-id") == idParent) {
@@ -144,6 +152,7 @@
             });
             displayControls();
         }
+
         function uncheckChild(idParent) {
             $('.check-noi-dung').each(function () {
                 if ($(this).attr("parent-id") == idParent) {
@@ -154,6 +163,7 @@
             });
             displayControls();
         }
+
         function displayControls() {
             var ndchon = "";
             $('input.check-noi-dung:checked').each(function () {
