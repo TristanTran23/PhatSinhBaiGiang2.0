@@ -615,7 +615,7 @@
                 const textbox = modal.querySelector('.prompt-textbox');
                 const promptDisplay = modal.querySelector('.prompt-display');
 
-                const id = modal.id;
+                const id = modal.id.replace('myModal', '');
                 promptList[id] = {
                     checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
                     textboxValue: textbox.value,
