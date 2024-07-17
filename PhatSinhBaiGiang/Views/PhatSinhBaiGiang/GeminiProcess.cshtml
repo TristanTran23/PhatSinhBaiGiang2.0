@@ -398,9 +398,7 @@
     <script src="~/assets/js/markdown/showdown.min.js" type="text/javascript"></script>
     <script src="~/assets/js/gemini-processing.js?v=1.1" type="text/javascript"></script>
     <script>
-
         const system_prompt = 'From now you are a SQL Teacher, have a lot of practical experience and high pedagogical skill, can explain knowledge in many ways to easy understand to learner, inspire learner. "SQL for Data Analytics" is first module in Data Analytics Certificate. The learners almost are working professionals and senior students.  You update your chat information only, no create content. I will give you syllabus for module after that';
-
         var prompt1 = `{systemPrompt} Become a good Teacher, have a lot of practical experience in SQL. You will write a SQL handbook for working professionals and senior students. The document not only focuses on SQL query techniques in Google BigQuery ML but also guides learners on how to use SQL to analyze data efficiently in their work. The outline of the document as follows:
 {context}
 I'd like you to start writing the first sections, focusing particularly on the {content}.
@@ -408,6 +406,11 @@ The content begin with the important meaning of knowing Database architecture i
 The content must be detail, easy to understand and professional that really connect with readers. Use examples to help explain complex concepts with our readers. No made assumption. Use table, image when suitable to illustrate. Give links reference for the learner can read more. Do not write any further until I instruct you to do so. Translate the result to Vietnammese`;
         var prompt2 = `{systemPrompt} Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML.`;
         var prompt3 = `{systemPrompt} Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML. Please provide references to the sources of information used in the document.`;
+        const arrNoiDung = [];
+        const arrId = [];
+        var nd_context = "";
+        var originalState = {};
+        var promptList = {};
 
         $(document).ready(function () {
             $('#prompt').val(prompt1);
@@ -461,12 +464,6 @@ The content must be detail, easy to understand and professional that really conn
                 $('#sendRequest').prop('disabled', true);
             }
         }
-
-        const arrNoiDung = [];
-        const arrId = [];
-        var nd_context = "";
-        var originalState = {};
-        var promptList = {};
 
         $('#sendRequest').click(function () {
             if ($('input.check-noi-dung:checked').length <= 0) {
@@ -523,9 +520,6 @@ The content must be detail, easy to understand and professional that really conn
         });
 
         $('.download-prompt').click(async function() {
-            @* document.querySelectAll('.modal').forEach(modal => {
-                await saveOriginalState(modal);
-            }) *@
             await exportPrompt();
         });
 
@@ -607,6 +601,21 @@ The content must be detail, easy to understand and professional that really conn
                     $(radio).trigger('change');
                 }
             })
+        }
+
+        function saveAllPrompt() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                const radioButtons = modal.querySelectorAll('.prompt-option');
+                const textbox = modal.querySelector('.prompt-textbox');
+                const promptDisplay = modal.querySelector('.prompt-display');
+
+                const id = modal.id;
+                promptList[id] = {
+                    checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
+                    textboxValue: textbox.value,
+                    promptDisplayValue: promptDisplay.value
+                };
+            });
         }
 
         function updatePrompt() {
