@@ -399,13 +399,9 @@
     <script src="~/assets/js/gemini-processing.js?v=1.1" type="text/javascript"></script>
     <script>
         const system_prompt = 'From now you are a SQL Teacher, have a lot of practical experience and high pedagogical skill, can explain knowledge in many ways to easy understand to learner, inspire learner. "SQL for Data Analytics" is first module in Data Analytics Certificate. The learners almost are working professionals and senior students.  You update your chat information only, no create content. I will give you syllabus for module after that';
-        var prompt1 = `{systemPrompt} Become a good Teacher, have a lot of practical experience in SQL. You will write a SQL handbook for working professionals and senior students. The document not only focuses on SQL query techniques in Google BigQuery ML but also guides learners on how to use SQL to analyze data efficiently in their work. The outline of the document as follows:
-{context}
-I'd like you to start writing the first sections, focusing particularly on the {content}.
-The content begin with the important meaning of knowing Database architecture in relational databases in Analytic data (WHY). After that, you explain WHAT - Database architecture in relational databases. Then add HOW to build Database architecture in BigQuery in Google.
-The content must be detail, easy to understand and professional that really connect with readers. Use examples to help explain complex concepts with our readers. No made assumption. Use table, image when suitable to illustrate. Give links reference for the learner can read more. Do not write any further until I instruct you to do so. Translate the result to Vietnammese`;
-        var prompt2 = `{systemPrompt} Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML.`;
-        var prompt3 = `{systemPrompt} Please provide detailed information about the syntax and usage of SQL commands related to {content}, with examples specific to Google BigQuery ML. Please provide references to the sources of information used in the document.`;
+        var prompt1 = {0:`{systemPrompt} You are a teacher assistant and you will create teaching materials about SQL for Data Analytics. You need to follow my instructions step by step. You have to see what bullet points the user have selected prior to creating texts. First, you need an outline for the material, which is derived from bullet points that the user has selected as follows: {context} The numbering for headings has the same format as the list of topic selection. You are now required to write {content} for each topic and main idea for this outline. Each section must be informative, easy to understand explained carefully in detail and fully expanded. You need to explain what, why and how in each topic. Graphs and illustrations may be included where relevant. The content should be in Vietnamese, and for each main idea there must be two to four bullet points satisfying my requirements. The text font is Arial. If you have completed the user’s selection of topics, you will write “end of document”.`};
+        var prompt2 = {0:`{systemPrompt}You are a teacher assistant and you will create teaching materials about SQL for Data Analytics. You need to follow my instructions step by step. You have to see what bullet points the user have selected prior to creating texts. First, you need an outline for the material, which is derived from bullet points that the user has selected as follows: {context} The numbering for headings has the same format as the list of topic selection. You are now required to write {content} for each topic and main idea for this outline. Each section must be informative, easy to understand explained carefully in detail and fully expanded. You need to explain what, why and how in each topic. From section III and on, you are required to give examples about a specific database about students in a high school. You may create a database in your memory, and the examples are about that database. Graphs and illustrations may be included where relevant. The content should be in Vietnamese, and for each main idea there must be two to four bullet points satisfying my requirements. The text font is Arial. If you have completed the user’s selection of topics, you will write “end of document”.`};
+        var prompt3 = {0:`{systemPrompt}You are a teacher assistant and you will provide links for students who are learning SQL for Data Analysis. You need to follow my instructions step by step. You have to see what bullet points the user have selected prior to providing the links {context} For each selection the user has made, give links in the output format of bullet points. The links could be to courses, Youtube videos, textbooks or papers {content}`};
         const arrNoiDung = [];
         const arrId = [];
         var nd_context = "";
@@ -416,11 +412,23 @@ The content must be detail, easy to understand and professional that really conn
             $('#prompt').val(prompt1);
             $('.modal').each(function() {
                 var defaultRadio = $(this).find('.prompt-option[value="default"]');
-                defaultRadio.prop('checked', true);
-                defaultRadio.trigger('click');
+                defaultRadio.prop('checked', true).trigger('click');
             });
 
             $('#system-prompt').val(system_prompt);
+            document.querySellectAll('.modal').forEach(modal => {
+                const id = modal.id;
+
+                if (!prompt1[id]) {
+                    prompt1[id] = prompt1[0];
+                }
+                if (!prompt2[id]) {
+                    prompt2[id] = prompt2[0];
+                }
+                if (!prompt3[id]) {
+                    prompt3[id] = prompt3[0];
+                } 
+            })
         });
         $('.check-noi-dung').change(function () {
             var id = $(this).attr("id");
@@ -453,15 +461,11 @@ The content must be detail, easy to understand and professional that really conn
             displayControls();
         }
         function displayControls() {
-            if ($('input.check-noi-dung:checked').length) {
-                $('#sendRequest').removeClass('btn-outline-info');
-                $('#sendRequest').addClass('btn-info');
-                $('#sendRequest').prop('disabled', false);
-            }
-            else {
-                $('#sendRequest').removeClass('btn-info');
-                $('#sendRequest').addClass('btn-outline-info');
-                $('#sendRequest').prop('disabled', true);
+            const checkedInputs = $('input.check-noi-dung:checked');
+            if (checkedInputs.length) {
+                $('#sendRequest').removeClass('btn-outline-info').addClass('btn-info').prop('disabled', false);
+            } else {
+                $('#sendRequest').removeClass('btn-info').addClass('btn-outline-info').prop('disabled', true);
             }
         }
 
@@ -498,14 +502,7 @@ The content must be detail, easy to understand and professional that really conn
             originalState = saveOriginalState(modal);
         });
 
-        $('.close').click(function() {
-            var id = $(this).attr("id");
-            var modal = document.getElementById("myModal" + id);
-            modal.style.display = "none";
-            originalState = saveOriginalState(modal);
-        });
-
-        $('.modal-confirm').click(function() {
+        $('.close, .modal-confirm').click(function() {
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
             modal.style.display = "none";
@@ -573,6 +570,15 @@ The content must be detail, easy to understand and professional that really conn
             const radioButtons = modal.querySelectorAll('.prompt-option');
             const textbox = modal.querySelector('.prompt-textbox');
             const promptDisplay = modal.querySelector('.prompt-display');
+            const id = modal.id;
+
+            promptList[id] = {
+                checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
+                prompt1 = prompt1[id],
+                prompt2 = prompt2[id],
+                prompt3 = prompt3[id],
+                system_prompt = system_prompt[id],
+            };
 
             return{
                 checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
@@ -613,7 +619,11 @@ The content must be detail, easy to understand and professional that really conn
                 promptList[id] = {
                     checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
                     textboxValue: textbox.value,
-                    promptDisplayValue: promptDisplay.value
+                    promptDisplayValue: promptDisplay.value,
+                    prompt1 = prompt1,
+                    prompt2 = prompt2,
+                    prompt3 = prompt3,
+                    system_prompt = system_prompt,
                 };
             });
         }
@@ -703,7 +713,7 @@ The content must be detail, easy to understand and professional that really conn
                 try {
                     // Show the file picker
                     const handle = await window.showSaveFilePicker({
-                        suggestedName: 'generated_result.doc',
+                        suggestedName: 'document.doc',
                         types: [{
                             description: 'Word Document',
                             accept: {'application/msword': ['.doc']},
@@ -744,7 +754,8 @@ The content must be detail, easy to understand and professional that really conn
         }
         
         async function exportPrompt() {
-            const jsonString = JSON.stringify(originalState, null, 2);
+            saveAllPrompt();
+            const jsonString = JSON.stringify(promptList, null, 2);
             const blob = new Blob([jsonString], {type: 'application/json'});
 
             if ('showSaveFilePicker' in window) {
