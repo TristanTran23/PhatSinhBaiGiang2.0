@@ -332,8 +332,9 @@
                     <div class="process-title">Phát sinh bài giảng cho các nội dung đã chọn</div>
                     <div class="prompt-content form-group">
                         @* <label>Prompt cho Gemini AI: (phải có từ khóa <span style="color: #db0505">{context}</span> để đại diện cho ngữ cảnh và <span style="color: #db0505">{content}</span> để đại diện cho nội dung câu hỏi)</label> *@
+                        <label>System Prompt:</label>
                         <textarea id="system-prompt" class="form-control" rows="3"></textarea>
-                        <div id="currentPrompt" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div>
+                        @* <div id="currentPrompt" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div> *@
                     </div> 
                         @* <input type="text", id="prompt" style="display: none;"> *@
                     <div class="process-container row">
@@ -782,7 +783,7 @@
                 
                 var content = arrNoiDung.shift();
                 var question = $('#prompt').val().replace("{systemPrompt}", system_prompt).replace("{context}", nd_context).replace("{content}", content);
-                $('#currentPrompt').text("Current prompt:\n" + question);
+                @* $('#currentPrompt').text("Current prompt:\n" + question); *@
 
                 var parentid = 'generatedContainer';
                 var outputid = 'generatedItem' + $('.generate-item').length + 1;
