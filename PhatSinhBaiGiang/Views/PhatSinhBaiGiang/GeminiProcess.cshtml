@@ -415,8 +415,16 @@ The content must be detail, easy to understand and professional that really conn
         var promptList = {};
 
         $(document).ready(function () {
-            document.querySelectorAll('.modal').forEach(modal => {
-                const id = modal.id.replace('myModal', '');
+            $('#prompt').val(prompt1);
+            $('.modal').each(function() {
+                var defaultRadio = $(this).find('.prompt-option[value="default"]');
+                defaultRadio.prop('checked', true).trigger('click');
+            });
+
+            $('#system-prompt').val(system_prompt);
+            document.querySellectAll('.modal').forEach(modal => {
+                const id = modal.id;
+
                 if (!prompt1[id]) {
                     prompt1[id] = prompt1[0];
                 }
@@ -425,16 +433,8 @@ The content must be detail, easy to understand and professional that really conn
                 }
                 if (!prompt3[id]) {
                     prompt3[id] = prompt3[0];
-                }
-            });
-            $('#prompt').val(prompt1[0]);
-            $('.modal').each(function() {
-                var defaultRadio = $(this).find('.prompt-option[value="default"]');
-                defaultRadio.prop('checked', true);
-                defaultRadio.trigger('click');
-            });
-
-            $('#system-prompt').val(system_prompt);
+                } 
+            })
         });
         $('.check-noi-dung').change(function () {
             var id = $(this).attr("id");
@@ -467,15 +467,11 @@ The content must be detail, easy to understand and professional that really conn
             displayControls();
         }
         function displayControls() {
-            if ($('input.check-noi-dung:checked').length) {
-                $('#sendRequest').removeClass('btn-outline-info');
-                $('#sendRequest').addClass('btn-info');
-                $('#sendRequest').prop('disabled', false);
-            }
-            else {
-                $('#sendRequest').removeClass('btn-info');
-                $('#sendRequest').addClass('btn-outline-info');
-                $('#sendRequest').prop('disabled', true);
+            const checkedInputs = $('input.check-noi-dung:checked');
+            if (checkedInputs.length) {
+                $('#sendRequest').removeClass('btn-outline-info').addClass('btn-info').prop('disabled', false);
+            } else {
+                $('#sendRequest').removeClass('btn-info').addClass('btn-outline-info').prop('disabled', true);
             }
         }
 
@@ -512,14 +508,7 @@ The content must be detail, easy to understand and professional that really conn
             originalState = saveOriginalState(modal);
         });
 
-        $('.close').click(function() {
-            var id = $(this).attr("id");
-            var modal = document.getElementById("myModal" + id);
-            modal.style.display = "none";
-            originalState = saveOriginalState(modal);
-        });
-
-        $('.modal-confirm').click(function() {
+        $('.close, .modal-confirm').click(function() {
             var id = $(this).attr("id");
             var modal = document.getElementById("myModal" + id);
             modal.style.display = "none";
@@ -550,26 +539,6 @@ The content must be detail, easy to understand and professional that really conn
                 });
             });
         });
-        document.querySelectorAll('.modal').forEach(modal => {
-            const radioButtons = modal.querySelectorAll('.prompt-option');
-            const textbox = modal.querySelector('.prompt-textbox');
-            const promptDisplay = modal.querySelector('.prompt-display');
-            const cancelButton = modal.querySelector('.modal-cancel');
-
-            promptDisplay.addEventListener('input', function() {
-                const checkedRadio = Array.from(radioButtons).find(radio => radio.checked);
-                if (checkedRadio) {
-                    let id = checkedRadio.id;
-                    if (checkedRadio.value === 'default') {
-                        prompt1[id] = this.value;
-                    } else if (checkedRadio.value === 'syntax') {
-                        prompt2[id] = this.value;
-                    } else if (checkedRadio.value === 'reference') {
-                        prompt3[id] = this.value;
-                    }
-                }
-            });
-        }); 
 
         document.querySelectorAll('.modal').forEach(modal => {
             const radioButtons = modal.querySelectorAll('.prompt-option');
@@ -586,17 +555,15 @@ The content must be detail, easy to understand and professional that really conn
                         textbox.style.display = 'none';
                         promptDisplay.style.display = 'inline-block';
                         if (this.checked) {
-                            let id = radio.id;
                             let newPrompt = '';
-                            
                             if (this.value === 'other') {
                                 newPrompt = textbox.value;
                             } else if (this.value === 'default') {
-                                newPrompt = prompt1[id];
+                                newPrompt = prompt1;
                             } else if (this.value === 'syntax') {
-                                newPrompt = prompt2[id];
+                                newPrompt = prompt2;
                             } else if (this.value === 'reference') {
-                                newPrompt = prompt3[id];
+                                newPrompt = prompt3;
                             }
                             promptDisplay.value = newPrompt;
                         }
@@ -609,6 +576,15 @@ The content must be detail, easy to understand and professional that really conn
             const radioButtons = modal.querySelectorAll('.prompt-option');
             const textbox = modal.querySelector('.prompt-textbox');
             const promptDisplay = modal.querySelector('.prompt-display');
+            const id = modal.id;
+
+            promptList[id] = {
+                checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
+                prompt1 = prompt1[id],
+                prompt2 = prompt2[id],
+                prompt3 = prompt3[id],
+                system_prompt = system_prompt[id],
+            };
 
             return{
                 checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
@@ -650,10 +626,10 @@ The content must be detail, easy to understand and professional that really conn
                     checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
                     textboxValue: textbox.value,
                     promptDisplayValue: promptDisplay.value,
-                    prompt1: prompt1[id],
-                    prompt2: prompt2[id],
-                    prompt3: prompt3[id],
-                    system_prompt: system_prompt
+                    prompt1 = prompt1,
+                    prompt2 = prompt2,
+                    prompt3 = prompt3,
+                    system_prompt = system_prompt,
                 };
             });
         }
@@ -666,17 +642,15 @@ The content must be detail, easy to understand and professional that really conn
 
                 radioButtons.forEach(radio => {
                     if (radio.id === id && radio.checked) {
-                        let id = radio.id;
                         let newPrompt = '';
-                        
                         if (radio.value === 'other') {
                             newPrompt = textbox.value;
                         } else if (radio.value === 'default') {
-                            newPrompt = prompt1[id];
+                            newPrompt = prompt1;
                         } else if (radio.value === 'syntax') {
-                            newPrompt = prompt2[id];
+                            newPrompt = prompt2;
                         } else if (radio.value === 'reference') {
-                            newPrompt = prompt3[id];
+                            newPrompt = prompt3;
                         }
                         $('#prompt').val(newPrompt);
                     }
@@ -745,7 +719,7 @@ The content must be detail, easy to understand and professional that really conn
                 try {
                     // Show the file picker
                     const handle = await window.showSaveFilePicker({
-                        suggestedName: 'generated_result.doc',
+                        suggestedName: 'document.doc',
                         types: [{
                             description: 'Word Document',
                             accept: {'application/msword': ['.doc']},
@@ -786,7 +760,8 @@ The content must be detail, easy to understand and professional that really conn
         }
         
         async function exportPrompt() {
-            const jsonString = JSON.stringify(originalState, null, 2);
+            saveAllPrompt();
+            const jsonString = JSON.stringify(promptList, null, 2);
             const blob = new Blob([jsonString], {type: 'application/json'});
 
             if ('showSaveFilePicker' in window) {
