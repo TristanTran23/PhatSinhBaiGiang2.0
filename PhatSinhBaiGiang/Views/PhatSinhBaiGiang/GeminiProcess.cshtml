@@ -423,7 +423,7 @@ The content must be detail, easy to understand and professional that really conn
 
             $('#system-prompt').val(system_prompt);
             document.querySellectAll('.modal').forEach(modal => {
-                const id = modal.id;
+                const id = modal.id.replace('myModal', '');
 
                 if (!prompt1[id]) {
                     prompt1[id] = prompt1[0];
