@@ -287,6 +287,18 @@
         border-radius: 6px;
         margin: auto;
     }
+    .upload-prompt {
+        background-color: #03c3ec;
+        color: #fff;
+        border: none;
+        padding: 8px 30px 8px 30px;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        width: auto;
+        border-radius: 6px;
+        margin: auto;
+    }
         .prompt-display {
             width: 100%;
             height: 150px;
@@ -370,7 +382,8 @@
                             <div class="controls">
                                 <input type="button" id="sendRequest" value="Generate" class="btn btn-outline-info" disabled="disabled" />
                                 <input type="button" id="exportPrompt" value="Export Prompt" class="download-prompt"/>
-                                <input type="button" id="uploadPrompt" value="Upload Prompt" class="download-prompt"/>
+                                <input type="button" id="uploadPromptBtn" value="Upload Prompt" class="upload-prompt"/>
+                                <input type="file" id="uploadPrompt" accept=".json" style="display: none;">
                             </div>
                         </div>
                         <div class="content-processing col-md-7 col-lg-8">
@@ -429,7 +442,9 @@
                     prompt3[id] = prompt3[0];
                 }
             });
+            
             $('#prompt').val(prompt1[0]);
+
             $('.modal').each(function() {
                 var defaultRadio = $(this).find('.prompt-option[value="default"]');
                 defaultRadio.prop('checked', true).trigger('click');
@@ -450,6 +465,7 @@
                 } 
             })
         });
+
         $('.check-noi-dung').change(function () {
             var id = $(this).attr("id");
             if ($(this).is(':checked')) {
@@ -457,6 +473,27 @@
             }
             else {
                 uncheckChild(id);
+            }
+        });
+
+        document.getElementById('uploadPromptBtn').addEventListener('click', function() {
+            document.getElementById('uploadPrompt').click();
+        });
+
+        document.getElementById('uploadPrompt').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const contents = e.target.result;
+                    try {
+                        const jsonData = JSON.parse(contents);
+                        loadPrompt(jsonData);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                };
+                reader.readAsText(file);
             }
         });
 
@@ -665,6 +702,51 @@
                     system_prompt: system_prompt,
                 };
             });
+        }
+
+        function loadPrompt(data) {
+            for (let id in data) {
+                if (data.hasOwnProperty(id)) {
+                    prompt1[id] = data[id].prompt1 || prompt1[id];
+                    prompt2[id] = data[id].prompt2 || prompt2[id];
+                    prompt3[id] = data[id].prompt3 || prompt3[id];
+                    
+                    // Update system_prompt if it exists in the JSON
+                    if (data[id].system_prompt) {
+                        system_prompt = data[id].system_prompt;
+                        $('#system-prompt').val(system_prompt);
+                    }
+                    
+                    // Update the UI for this specific modal
+                    updateModalUI(id, data[id]);
+                }
+            }
+        }
+
+        function updateModalUI(id, data) {
+            const modal = document.getElementById(`myModal${id}`);
+            if (modal) {
+                const radioButtons = modal.querySelectorAll('.prompt-option');
+                const textbox = modal.querySelector('.prompt-textbox');
+                const promptDisplay = modal.querySelector('.prompt-display');
+
+                // Update radio button selection
+                radioButtons.forEach(radio => {
+                    if (radio.value === data.checkedRadio.value) {
+                        radio.checked = true;
+                    }
+                });
+
+                // Update textbox and promptDisplay
+                textbox.value = data.textboxValue;
+                promptDisplay.value = data.promptDisplayValue;
+
+                // Trigger change event on the selected radio button to update UI
+                const selectedRadio = Array.from(radioButtons).find(radio => radio.checked);
+                if (selectedRadio) {
+                    selectedRadio.dispatchEvent(new Event('change'));
+                }
+            }
         }
 
         function updatePrompt() {
