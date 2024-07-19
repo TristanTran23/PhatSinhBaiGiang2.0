@@ -43,15 +43,5 @@ app.post('/api/getGeminiAnswer', async (req, res, next) => {
     }
 });
 
-// Route to get weather data
-app.get('/api/trongnuoc', (req, res) => {
-    // Fetch weather data from external API
-    fetch(`http://api.weatherapi.com/v1/current.json?key=${process.env.API_KEY2}&q=Hanoi&aqi=no`)
-        .then(r => r.text())
-        .then(data => {
-            res.json(data);
-        });
-});
-
 // Start the server
 app.listen(process.env.PORT);
