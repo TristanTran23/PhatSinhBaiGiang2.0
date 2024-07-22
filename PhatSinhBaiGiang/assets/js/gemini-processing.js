@@ -1,4 +1,4 @@
-﻿const apiUrl = process.env(IP_ADRESS);
+﻿const apiUrl = "http://192.168.11.243";
 
 async function sendQuestionToAgent(userQuestion, outputid, parentid) {
 	//$(output).html("<img src='/template/frontend/images/generating2.gif' style='width: 50px !important;' />");
