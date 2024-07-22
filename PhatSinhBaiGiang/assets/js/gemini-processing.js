@@ -1,4 +1,4 @@
-﻿const apiUrl = "http://localhost:3000/api/";
+﻿const apiUrl = process.env(IP_ADRESS);
 
 async function sendQuestionToAgent(userQuestion, outputid, parentid) {
 	//$(output).html("<img src='/template/frontend/images/generating2.gif' style='width: 50px !important;' />");
