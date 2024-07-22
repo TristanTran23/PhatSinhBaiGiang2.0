@@ -3,3 +3,919 @@
 @{
     ViewBag.Title = "GPTProcess";
 }
+<style>
+    .container-p-y {
+        padding-bottom: 0 !important;
+    }
+
+    .process-title {
+        color: #FD6504;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .card-body {
+        height: calc(100vh - 140px);
+        overflow: auto;
+        padding-bottom: 0;
+    }
+
+    .content-processing {
+        padding-right: 0;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 340px);
+    }
+
+    .prompt-content {
+        margin: 10px 0;
+    }
+
+    .process-container {
+        padding: 0 14px;
+    }
+
+    .content-list {
+        padding: 0;
+    }
+
+    .content-title {
+        background-color: #4d4b4b;
+        color: #fff;
+        padding: 5px 10px;
+    }
+
+    .noi-dung-chon {
+        height: calc(100vh - 410px);
+        overflow: auto;
+        border: 1px solid #aaa;
+    }
+
+    .controls {
+        text-align: center;
+        padding: 5px;
+    }
+
+    p.Head3 {
+        margin: 0 0 0 5px;
+        padding: 5px 0;
+    }
+
+    p.Head4 {
+        margin: 0 0 0 20px;
+        padding: 5px 0;
+    }
+
+    p.Head5 {
+        margin: 0 0 0 40px;
+        padding: 5px 0;
+        text-indent: -15px;
+        padding-left: 35px;
+    }
+
+    p label {
+        cursor: pointer;
+    }
+
+        p label:hover {
+            color: #db0505;
+        }
+    .generate-results {
+        padding-bottom: 40px;
+    }
+        .generate-results pre {
+            background-color: rgba(13, 13, 13, 0.9);
+            color: #fff;
+            padding: 10px;
+            position: relative;
+        }
+    .generate-content {
+        border: 1px solid #aaa;
+        /*height: calc(100vh - 365px);*/
+        overflow: hidden scroll;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .content-container {
+        /*overflow: auto;*/
+        padding: 10px;
+    }
+    .generate-item {
+        margin-bottom: 40px;
+        border-bottom: 1px solid #888;
+    }
+        .generate-item h1 {
+            font-size: 24px;
+        }
+        .generate-item h2 {
+            font-size: 22px;
+        }
+        .generate-item h3 {
+            font-size: 20px;
+        }
+
+    code.python.language-python:before {
+        content: 'Python';
+        display: block;
+        background-color: #424242;
+        margin: -10px -10px 5px -10px;
+        padding: 5px 10px;
+    }
+    code.sql.language-sql:before {
+        content: 'SQL';
+        display: block;
+        background-color: #424242;
+        margin: -10px -10px 5px -10px;
+        padding: 5px 10px;
+    }
+
+    .btn-copy-code {
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: none;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        color: #e3e3e3;
+    }
+
+    .img-processing {
+        height: 80px;
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: none;
+    }
+        .img-processing img {
+            height: 100%;
+        }
+    .continue-process {
+        height: auto;
+        padding: 10px 30px 15px 20px;
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: none;
+        margin-bottom: 45px;
+    }
+        .continue-process button {
+            max-width: 100%;
+            font-size: 18px;
+        }
+            .continue-process button .next-content {
+                display: block;
+                text-wrap: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 14px;
+            }
+            .continue-process button .download-content {
+                display: block;
+                text-wrap: nowrap;
+                overflow: show;
+                text-overflow: ellipsis;
+                font-size: 14px;
+            }
+    .download-button {
+        background-color: #03c3ec;
+        color: #fff;
+        border: none;
+        padding: 10px 30px 10px 30px;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        width: 90%;
+        border-radius: 5px;
+        margin: auto;
+    }
+    .prompt-button {
+        background-color: rgba(255, 255, 255, 0.8);
+        color: #888;
+        padding: 5px 5px;
+        border: none;
+    }
+    .prompt-textbox {
+        width: 100%;
+        height: 150px;
+        margin-top: 10px;
+    }
+    .prompt-option {
+
+    }
+    .modal {
+        display: none; /* Hidden by default */
+        position: absolute; 
+        z-index: 69; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            display: flex;
+            flex-direction: row; /* Change the flex direction to row */
+            justify-content: space-between;
+        }
+        .modal-options {
+            width: 45%;
+            margin-top: 50px;
+        }
+        .modal-prompt {
+            width: 50%;
+        }
+        .modal-footer {
+        padding: 15px;
+        text-align: right;
+        border-top: 1px solid #e5e5e5;
+        }
+        .modal-footer .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .modal-cancel {
+        color: #333;
+        background-color: #fff;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .modal-confirm {
+        color: #fff;
+        background-color: #337ab7;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .modal-footer .btn + .btn {
+        margin-left: 5px;
+    }
+    .download-prompt {
+        background-color: #03c3ec;
+        color: #fff;
+        border: none;
+        padding: 8px 30px 8px 30px;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        width: auto;
+        border-radius: 6px;
+        margin: auto;
+    }
+    .upload-prompt {
+        background-color: #03c3ec;
+        color: #fff;
+        border: none;
+        padding: 8px 30px 8px 30px;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        width: auto;
+        border-radius: 6px;
+        margin: auto;
+    }
+        .prompt-display {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+        }
+    .close {
+        color: #aaa;
+        background-color: #fefefe;
+        float: right;
+        font-size: 20px;
+        font-weight: bold;
+        width: 2%;
+        border: none;
+    }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+<div class="container-fluid flex-grow-1 container-p-y" style="padding-bottom: 0 !important;">
+    <div class="card">
+        <div class="d-flex align-items-end row">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <div class="process-title">Phát sinh bài giảng cho các nội dung đã chọn</div>
+                    <div class="prompt-content form-group">
+                        @* <label>Prompt cho Gemini AI: (phải có từ khóa <span style="color: #db0505">{context}</span> để đại diện cho ngữ cảnh và <span style="color: #db0505">{content}</span> để đại diện cho nội dung câu hỏi)</label> *@
+                        <label>System Prompt:</label>
+                        <textarea id="system-prompt" class="form-control" rows="3"></textarea>
+                        @* <div id="currentPrompt" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div> *@
+                    </div> 
+                        @* <input type="text", id="prompt" style="display: none;"> *@
+                    <div class="process-container row">
+                        <div class="content-list col-md-5 col-lg-4">
+                            <div class="content-title">Nội dung đã chọn</div>
+                            <div class="noi-dung-chon">
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    foreach (var content in Model)
+                                    {
+                                        if (content.Style == "Head4")
+                                        {
+                                            <p class="@content.Style"><label><input type="radio" name="noidung" id="@content.Id" parent-id="@content.IdCha" class="check-noi-dung" data-stt="@content.Stt" data-content="@(content.Stt + "/ " + content.Noidung)" data-style="@content.Style" /> @(content.Stt != "" ? content.Stt + "/" : "") @content.Noidung</label></p>
+                                        }
+                                        else
+                                        {
+                                            <p class="@content.Style"><label id="@content.Id" parent-id="@content.IdCha" class="check-noi-dung" data-stt="@content.Stt" data-content="@content.Noidung" data-style="@content.Style"> @(content.Stt != "" ? content.Stt + "/" : "") @content.Noidung<button type="button" id="@content.Id" class="prompt-button"><span style="font-size: 18px;">&#9998;</span></button></label></p>
+                                        }
+                                        <div id="myModal@(content.Id)" class="modal">
+                                            <div class="modal-content">
+                                                <div>
+                                                    <div class="modal-options">
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="default" id="@(content.Id)" class="prompt-option"/>Kiến thức</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="syntax" id="@(content.Id)" class="prompt-option"/>Kiến thức + Cú pháp lệnh</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="reference" id="@(content.Id)" class="prompt-option"/>Tài liệu tham khảo</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="other" id="@(content.Id)" class="prompt-option"/>Khác:</label></p>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-prompt">
+                                                    <p align="right">
+                                                        <button type="button" id="@content.Id" class="close">x</button>
+                                                    </p>
+                                                    <h4>Prompt:</h4>
+                                                    <textarea type="text" class="prompt-textbox" id="@content.Id" style="display: none;"></textarea>
+                                                    <textarea type="text" id="prompt" class="prompt-display"></textarea>
+                                                    <div class="modal-footer">
+                                                        <button type="button" id="@content.Id" class="modal-cancel">Cancel</button>
+                                                        <button type="button" id="@content.Id" class="modal-confirm">Confirm</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <div class="controls">
+                                <input type="button" id="sendRequest" value="Generate" class="btn btn-outline-info" disabled="disabled" />
+                                <input type="button" id="exportPrompt" value="Export Prompt" class="download-prompt"/>
+                                <input type="button" id="uploadPromptBtn" value="Upload Prompt" class="upload-prompt"/>
+                                <input type="file" id="uploadPrompt" accept=".json" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="content-processing col-md-7 col-lg-8">
+                            <div class="content-title">Germini AI Generation</div>
+                            <div class="generate-content" id="generatedContainer">
+                                <div class="content-container">
+                                    <div class="generate-results" id="generatedResult">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="img-processing">
+                                <img src="~/Content/images/processing.gif" alt="" />
+                            </div>
+                            <div class="continue-process">
+                                <button type="button" id="nextRequest" class="btn btn-info">Nhấn để phát sinh tiếp <span class="next-content"></span></button>                               
+                            </div>
+                            <button type="button" id="download" class="download-button">Tải xuống</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/assets/js/markdown/showdown.min.js" type="text/javascript"></script>
+    <script src="~/assets/js/gpt-processing.js?v=1.1" type="text/javascript"></script>
+    <script>
+        var system_prompt = 'From now you are a SQL Teacher, have a lot of practical experience and high pedagogical skill, can explain knowledge in many ways to easy understand to learner, inspire learner. "SQL for Data Analytics" is first module in Data Analytics Certificate. The learners almost are working professionals and senior students.  You update your chat information only, no create content. I will give you syllabus for module after that';
+
+        var prompt1 = {0:`{systemPrompt} Become a good Teacher, have a lot of practical experience in SQL. You will write a SQL handbook for working professionals and senior students. The document not only focuses on SQL query techniques in Google BigQuery ML but also guides learners on how to use SQL to analyze data efficiently in their work. The outline of the document as follows:
+    {context}
+    I'd like you to start writing the first sections, focusing particularly on the {content}.
+    The content begin with the important meaning of knowing Database architecture in relational databases in Analytic data (WHY). After that, you explain WHAT - Database architecture in relational databases. Then add HOW to build Database architecture in BigQuery in Google.
+    The content must be detail, easy to understand and professional that really connect with readers. Use examples to help explain complex concepts with our readers. No made assumption. Use table, image when suitable to illustrate. Give links reference for the learner can read more. Do not write any further until I instruct you to do so. Translate the result to Vietnammese`};
+        var prompt2 = {0:`{systemPrompt} You are a teacher assistant and you will create teaching materials about SQL for Data Analytics. You need to follow my instructions step by step. You have to see what bullet points the user have selected prior to creating texts. First, you need an outline for the material, which is derived from bullet points that the user has selected as follows: {context} The numbering for headings has the same format as the list of topic selection. You are now required to write {content} for each topic and main idea for this outline. Each section must be informative, easy to understand explained carefully in detail and fully expanded. You need to explain what, why and how in each topic. From section III and on, you are required to give examples about a specific database about students in a high school. You may create a database in your memory, and the examples are about that database. Graphs and illustrations may be included where relevant. The content should be in Vietnamese, and for each main idea there must be two to four bullet points satisfying my requirements. The text font is Arial. If you have completed the user’s selection of topics, you will write “end of document”.`};
+        var prompt3 = {0:`{systemPrompt} You are a teacher assistant and you will provide links for students who are learning SQL for Data Analysis. You need to follow my instructions step by step. You have to see what bullet points the user have selected prior to providing the links {context} For each selection the user has made, give links in the output format of bullet points. The links could be to courses, Youtube videos, textbooks or papers {content}`};
+        var otherPrompt = {0: ``};
+        const arrNoiDung = [];
+        const arrId = [];
+        var nd_context = "";
+        var originalState = {};
+        var promptList = {};
+
+        $(document).ready(function () {
+            document.querySelectorAll('.modal').forEach(modal => {
+                const id = modal.id.replace('myModal', '');
+                if (!prompt1[id]) {
+                    prompt1[id] = prompt1[0];
+                }
+                if (!prompt2[id]) {
+                    prompt2[id] = prompt2[0];
+                }
+                if (!prompt3[id]) {
+                    prompt3[id] = prompt3[0];
+                }
+            });
+            
+            $('#prompt').val(prompt1[0]);
+
+            $('.modal').each(function() {
+                var defaultRadio = $(this).find('.prompt-option[value="default"]');
+                defaultRadio.prop('checked', true).trigger('click');
+            });
+
+            $('#system-prompt').val(system_prompt);
+            document.querySellectAll('.modal').forEach(modal => {
+                const id = modal.id.replace('myModal', '');
+
+                if (!prompt1[id]) {
+                    prompt1[id] = prompt1[0];
+                }
+                if (!prompt2[id]) {
+                    prompt2[id] = prompt2[0];
+                }
+                if (!prompt3[id]) {
+                    prompt3[id] = prompt3[0];
+                } 
+            })
+        });
+
+        $('.check-noi-dung').change(function () {
+            var id = $(this).attr("id");
+            if ($(this).is(':checked')) {
+                checkChild(id);
+            }
+            else {
+                uncheckChild(id);
+            }
+        });
+
+        document.getElementById('uploadPromptBtn').addEventListener('click', function() {
+            document.getElementById('uploadPrompt').click();
+        });
+
+        document.getElementById('uploadPrompt').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const contents = e.target.result;
+                    try {
+                        const jsonData = JSON.parse(contents);
+                        loadPrompt(jsonData);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function checkChild(idParent) {
+            $('.check-noi-dung').each(function () {
+                if ($(this).attr("parent-id") == idParent) {
+                    $(this).prop('checked', true);
+                    var id = $(this).attr("id");
+                    checkChild(id);
+                }
+            });
+            displayControls();
+        }
+
+        function uncheckChild(idParent) {
+            $('.check-noi-dung').each(function () {
+                if ($(this).attr("parent-id") == idParent) {
+                    $(this).prop('checked', false);
+                    var id = $(this).attr("id");
+                    uncheckChild(id);
+                }
+            });
+            displayControls();
+        }
+        
+        function displayControls() {
+            const checkedInputs = $('input.check-noi-dung:checked');
+            if (checkedInputs.length) {
+                $('#sendRequest').removeClass('btn-outline-info').addClass('btn-info').prop('disabled', false);
+            } else {
+                $('#sendRequest').removeClass('btn-info').addClass('btn-outline-info').prop('disabled', true);
+            }
+        }
+
+        $('#sendRequest').click(function () {
+            if ($('input.check-noi-dung:checked').length <= 0) {
+                return false;
+            }
+            $('input.check-noi-dung:checked').each(function () {
+                var id = $(this).attr("id");
+                nd_context += $(this).data("content") + "\n";
+                $('.noi-dung-chon label').each(function () {
+                    if ($(this).attr("parent-id") == id) {
+                        nd_context += $(this).text() + "\n";
+                        arrNoiDung.push($(this).text());
+                        arrId.push($(this).attr("id"));
+                    }
+                });
+            });
+            getAnswer();
+        });
+
+        $('#nextRequest').click(function () {
+            getAnswer();
+        });
+
+        $('#download').click(async function() {
+            await Export2Word();
+        });
+
+        $('.prompt-button').click(function() {
+            var id = $(this).attr("id");
+            var modal = document.getElementById("myModal" + id);
+            modal.style.display = "block";
+            originalState = saveOriginalState(modal);
+        });
+
+        $('.close, .modal-confirm').click(function() {
+            var id = $(this).attr("id");
+            var modal = document.getElementById("myModal" + id);
+            modal.style.display = "none";
+            originalState = saveOriginalState(modal);
+        });
+
+        $('.modal-cancel').click(function() {
+            var id = $(this).attr("id");
+            var modal = document.getElementById("myModal" + id);
+            restoreOriginalState(modal, originalState); 
+            modal.style.display = "none";
+        });
+
+        $('.download-prompt').click(async function() {
+            await exportPrompt();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('.prompt-option');
+    
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    radioButtons.forEach(otherRadio => {
+                        if (otherRadio !== this && otherRadio.id === this.id) {
+                            otherRadio.checked = false;
+                        }
+                    });
+                });
+            });
+        });
+        document.querySelectorAll('.modal').forEach(modal => {
+            const radioButtons = modal.querySelectorAll('.prompt-option');
+            const textbox = modal.querySelector('.prompt-textbox');
+            const promptDisplay = modal.querySelector('.prompt-display');
+            const cancelButton = modal.querySelector('.modal-cancel');
+
+            promptDisplay.addEventListener('input', function() {
+                const checkedRadio = Array.from(radioButtons).find(radio => radio.checked);
+                if (checkedRadio) {
+                    let id = checkedRadio.id;
+                    if (checkedRadio.value === 'default') {
+                        prompt1[id] = this.value;
+                    } else if (checkedRadio.value === 'syntax') {
+                        prompt2[id] = this.value;
+                    } else if (checkedRadio.value === 'reference') {
+                        prompt3[id] = this.value;
+                    }
+                }
+            });
+
+            radioButtons.forEach(radio => {
+                radio.addEventListener('click', function() {
+                    if (this.value === 'other' && this.checked) {
+                        textbox.style.display = 'inline-block';
+                        promptDisplay.style.display = 'none';
+                    } else {
+                        textbox.style.display = 'none';
+                        promptDisplay.style.display = 'inline-block';
+                        if (this.checked) {
+                            let id = radio.id;
+                            let newPrompt = '';
+                            
+                            if (this.value === 'other') {
+                                newPrompt = textbox.value;
+                            } else if (this.value === 'default') {
+                                newPrompt = prompt1[id];
+                            } else if (this.value === 'syntax') {
+                                newPrompt = prompt2[id];
+                            } else if (this.value === 'reference') {
+                                newPrompt = prompt3[id];
+                            }
+                            promptDisplay.value = newPrompt;
+                        }
+                    }
+                });
+            });
+        }); 
+
+        function saveOriginalState(modal) {
+            const radioButtons = modal.querySelectorAll('.prompt-option');
+            const textbox = modal.querySelector('.prompt-textbox');
+            const promptDisplay = modal.querySelector('.prompt-display');
+            const id = modal.id.replace('myModal', '');
+
+            promptList[id] = {
+                checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
+                textboxValue: textbox.value,
+                promptDisplayValue: promptDisplay.value,
+                prompt1: prompt1[id],
+                prompt2: prompt2[id],
+                prompt3: prompt3[id],
+                system_prompt: system_prompt,
+            };
+
+            return{
+                checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
+                textboxValue: textbox.value,
+                promptDisplayValue: promptDisplay.value
+            };
+        }
+
+        function restoreOriginalState(modal, originalState) {
+            if (!originalState) {
+                return;
+            }
+
+            const radioButtons = modal.querySelectorAll('.prompt-option');
+            const textbox = modal.querySelector('.prompt-textbox');
+            const promptDisplay = modal.querySelector('.prompt-display');
+
+            radioButtons.forEach(radio => {
+                radio.checked = radio === originalState.checkedRadio;
+            });
+            textbox.value = originalState.textboxValue;
+            promptDisplay.value = originalState.promptDisplayValue;
+
+            radioButtons.forEach(radio => {
+                if (radio.checked) {
+                    $(radio).trigger('change');
+                }
+            })
+        }
+
+        function saveAllPrompt() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                const radioButtons = modal.querySelectorAll('.prompt-option');
+                const textbox = modal.querySelector('.prompt-textbox');
+                const promptDisplay = modal.querySelector('.prompt-display');
+
+                const id = modal.id.replace('myModal', '');
+                promptList[id] = {
+                    checkedRadio: Array.from(radioButtons).find(radio => radio.checked),
+                    textboxValue: textbox.value,
+                    promptDisplayValue: promptDisplay.value,
+                    prompt1: prompt1[id],
+                    prompt2: prompt2[id],
+                    prompt3: prompt3[id],
+                    system_prompt: system_prompt,
+                };
+            });
+        }
+
+        function loadPrompt(data) {
+            for (let id in data) {
+                if (data.hasOwnProperty(id)) {
+                    prompt1[id] = data[id].prompt1 || prompt1[id];
+                    prompt2[id] = data[id].prompt2 || prompt2[id];
+                    prompt3[id] = data[id].prompt3 || prompt3[id];
+                    
+                    // Update system_prompt if it exists in the JSON
+                    if (data[id].system_prompt) {
+                        system_prompt = data[id].system_prompt;
+                        $('#system-prompt').val(system_prompt);
+                    }
+                    
+                    // Update the UI for this specific modal
+                    updateModalUI(id, data[id]);
+                }
+            }
+        }
+
+        function updateModalUI(id, data) {
+            const modal = document.getElementById(`myModal${id}`);
+            if (modal) {
+                const radioButtons = modal.querySelectorAll('.prompt-option');
+                const textbox = modal.querySelector('.prompt-textbox');
+                const promptDisplay = modal.querySelector('.prompt-display');
+
+                // Update radio button selection
+                radioButtons.forEach(radio => {
+                    if (radio.value === data.checkedRadio.value) {
+                        radio.checked = true;
+                    }
+                });
+
+                // Update textbox and promptDisplay
+                textbox.value = data.textboxValue;
+                promptDisplay.value = data.promptDisplayValue;
+
+                // Trigger change event on the selected radio button to update UI
+                const selectedRadio = Array.from(radioButtons).find(radio => radio.checked);
+                if (selectedRadio) {
+                    selectedRadio.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+
+        function updatePrompt() {
+            var id = arrId.shift();
+            document.querySelectorAll('.modal').forEach(modal => {
+                const textbox = modal.querySelector('.prompt-textbox');
+                const radioButtons = modal.querySelectorAll('.prompt-option');
+
+                radioButtons.forEach(radio => {
+                    if (radio.id === id && radio.checked) {
+                        let id = radio.id;
+                        let newPrompt = '';
+                        
+                        if (radio.value === 'other') {
+                            newPrompt = textbox.value;
+                        } else if (radio.value === 'default') {
+                            newPrompt = prompt1[id];
+                        } else if (radio.value === 'syntax') {
+                            newPrompt = prompt2[id];
+                        } else if (radio.value === 'reference') {
+                            newPrompt = prompt3[id];
+                        }
+                        $('#prompt').val(newPrompt);
+                    }
+                });
+
+            }); 
+        }
+
+        async function getAnswer() {
+            if (nd_context != "" && arrNoiDung.length > 0) {
+                updatePrompt();
+                
+                var content = arrNoiDung.shift();
+                var question = $('#prompt').val().replace("{systemPrompt}", system_prompt).replace("{context}", nd_context).replace("{content}", content);
+                @* $('#currentPrompt').text("Current prompt:\n" + question); *@
+
+                var parentid = 'generatedContainer';
+                var outputid = 'generatedItem' + $('.generate-item').length + 1;
+                var htmlResult = `<div class="generate-item" id="${outputid}"></div>`;
+                $('.generate-results').append(htmlResult);
+                $('.img-processing').show();
+                $('.continue-process').hide();
+                await sendQuestionToAgent(question, outputid, parentid)
+                $(`#${outputid} pre`).append(`<button id="btncopycode" class="btn-copy-code" onclick="copyCode(this)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" class="icon-sm"><path fill="currentColor" fill-rule="evenodd" d="M7 5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-2v2a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3h2zm2 2h5a3 3 0 0 1 3 3v5h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1zM5 9a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1z" clip-rule="evenodd"></path></svg> Copy code</button>`);
+                $('.img-processing').hide();
+                if (arrNoiDung.length > 0) {
+                    $('.continue-process').show();
+                    $('.next-content').text(arrNoiDung[0]);
+                }
+            }
+        }
+        function copyCode(el) {
+            var textToCopy = $(el).parent().find('code').html();
+            var tempTextarea = $('<textarea>');
+            $('body').append(tempTextarea);
+            textToCopy = textToCopy.replace(/\<br>/g, "\n").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+            tempTextarea.val(textToCopy.replace(/\<br>/g, "\n")).select();
+            document.execCommand('copy');
+            tempTextarea.remove();
+            var oldtext = el.innerHTML;
+            el.innerHTML = `<svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="icon-sm" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><polyline points="20 6 9 17 4 12"></polyline></svg>Copied!`;
+            setTimeout(() => {
+                el.innerHTML = oldtext;
+            }, 2000);
+        }
+        async function Export2Word() {
+            var content = document.getElementById('generatedResult').innerHTML;
+            
+            // Wrap the content in Word-compatible HTML
+            var wordContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>Generated Result</title>
+                </head>
+                <body>
+                    ${content}
+                </body>
+                </html>
+            `;
+
+            // Create a Blob with the Word-compatible content
+            var blob = new Blob([wordContent], {type: 'application/msword'});
+
+            // Check if the browser supports the File System Access API
+            if ('showSaveFilePicker' in window) {
+                try {
+                    // Show the file picker
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'document.doc',
+                        types: [{
+                            description: 'Word Document',
+                            accept: {'application/msword': ['.doc']},
+                        }],
+                    });
+
+                    // Create a FileSystemWritableFileStream to write to
+                    const writable = await handle.createWritable();
+
+                    // Write the contents of the file to the stream
+                    await writable.write(blob);
+
+                    // Close the file and write the contents to disk
+                    await writable.close();
+
+                } catch (err) {
+                    // The user probably aborted the save
+                    console.error('Error saving the file:', err);
+                }
+            } else {
+                // Fallback for browsers that don't support the File System Access API
+                alert('Your browser does not support the File System Access API. The file will be downloaded using the default method.');
+                
+                if (typeof saveAs === 'function') {
+                    saveAs(blob, "document.doc");
+                } else {
+                    // Basic fallback method
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    link.href = url;
+                    link.download = "documen.doc";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                }
+            }
+        }
+        
+        async function exportPrompt() {
+            saveAllPrompt();
+            const jsonString = JSON.stringify(promptList, null, 2);
+            const blob = new Blob([jsonString], {type: 'application/json'});
+
+            if ('showSaveFilePicker' in window) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'prompt.json',
+                        types: [{
+                            description: 'JSON File',
+                            accept: {'application/json': ['.json']},
+                        }],
+                    });
+
+                    const writable = await handle.createWritable();
+                    await writable.write(blob);
+                    await writable.close();
+
+                } catch (err) {
+                    console.error('Error saving the file:', err);
+                }
+            } else {
+                alert('Your browser does not support the File System Access API. The file will be downloaded using the default method.');
+                
+                if (typeof saveAs === 'function') {
+                    saveAs(blob, "prompt.json");
+                } else {
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    link.href = url;
+                    link.download = "prompt.json";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                }
+            }
+        }
+    </script>
+}

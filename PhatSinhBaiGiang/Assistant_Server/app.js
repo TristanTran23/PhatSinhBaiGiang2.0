@@ -2,7 +2,6 @@
 const express = require('express');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-
 // Load environment variables
 require('dotenv').config();
 
@@ -44,7 +43,7 @@ app.post('/api/getGeminiAnswer', async (req, res, next) => {
 });
 
 // Route to get weather data
-app.get('/api/trongnuoc', (req, res) => {
+app.get('/api/getGPTAnswer', (req, res) => {
     // Fetch weather data from external API
     fetch(`http://api.weatherapi.com/v1/current.json?key=${process.env.API_KEY2}&q=Hanoi&aqi=no`)
         .then(r => r.text())

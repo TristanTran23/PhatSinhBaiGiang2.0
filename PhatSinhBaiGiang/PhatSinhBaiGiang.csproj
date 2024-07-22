@@ -129,6 +129,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PhatSinhBaiGiangController.cs" />
+    <Compile Include="Controllers\PhatSinhBaiGiangGPTController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -169,6 +170,7 @@
     <Content Include="assets\js\config.js" />
     <Content Include="assets\js\dashboards-analytics.js" />
     <Content Include="assets\js\gemini-processing.js" />
+    <Content Include="assets\js\gpt-processing.js" />
     <Content Include="assets\js\helpers.js" />
     <Content Include="assets\js\jquery-ui.min.js" />
     <Content Include="assets\js\jquery.min.js" />
@@ -337,6 +339,8 @@
     <Content Include="Views\PhatSinhBaiGiang\Index.cshtml" />
     <Content Include="Template\cam-nang-mau.docx" />
     <Content Include="Views\PhatSinhBaiGiang\GeminiProcess.cshtml" />
+    <Content Include="Views\PhatSinhBaiGiangGPT\GPTProcess.cshtml" />
+    <Content Include="Views\PhatSinhBaiGiangGPT\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
