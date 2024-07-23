@@ -1,43 +1,53 @@
-const apiUrl = `https://api.openai.com/v1/models`;
+async function sendQuestionToAgent(userQuestion, systemPrompt, outputId, parentId) {
+    const response = await fetch(apiUrl + "getGPTAnswer", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            messages: [
+                {role: "system", content: systemPrompt},
+                {role: "user", content: userQuestion},
+            ],
+            model: "gpt-3.5-turbo"
+        }),
+    });
 
-async function sendQuestionToAgent(userQuestion, outputid, parentid) {
-	//$(output).html("<img src='/template/frontend/images/generating2.gif' style='width: 50px !important;' />");
-    var myHeader = new Hearder();
-    myHeader.append(`Authorization: Bearer ${process.env.GPT_API_KEY}`);
-	var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-      };
-    const response = await fetch("https://api.openai.com/v1/models", requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
-	const reader = response.body.getReader();
-	var responseText = "";
-	var responseHtml = "";
-	var converter = new showdown.Converter();
-	const decoder = new TextDecoder("utf-8", { fatal: false, ignoreBOM: true, BOMseen: true });
-	
-	while (true) {
-		const { value, done } = await reader.read();
-		if (done) break;
+    const reader = response.body.getReader();
+	$(`#${outputId}`).text(response);
+    const decoder = new TextDecoder();
+    const converter = new showdown.Converter();
 
-		responseText += decoder.decode(value, { stream: true }); //Decodeuint8arr(value);
-		responseHtml = responseText.replace(/_/g, 'emdash');
-		responseHtml = converter.makeHtml(responseHtml).replace('\n', '<br>');
-		responseHtml = responseHtml.replace(/emdash/g, '_');
+    let buffer = '';
+    while (true) {
+        const { value, done } = await reader.read();
+		$(`#${outputId}`.append("<div>1</div>"));
+        if (done) break;
 
-		const reg = /\【.+\】/g;
-		responseHtml = responseHtml.replace(reg, "");
-		//document.getElementById('result').innerHTML = responseHtml;
-		$(`#${outputid}`).html(responseHtml);
+        buffer += decoder.decode(value);
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
 
-		var element = document.getElementById(parentid);
-		var currentHeight = element.scrollHeight;
-		element.scrollTop = currentHeight;
-	}
-	
-	
-	console.log('Response fully received');
+        for (const line of lines) {
+            if (line.startsWith('data: ')) {
+                const jsonData = line.slice(6);
+                if (jsonData === '[DONE]') {
+                    console.log('Stream complete');
+                    return;
+                }
+                try {
+                    const { content } = JSON.parse(jsonData);
+                    if (content) {
+                        let htmlContent = converter.makeHtml(content);
+                        $(`#${outputId}`).append(htmlContent);
+
+                        const element = document.getElementById(parentId);
+                        element.scrollTop = element.scrollHeight;
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                }
+            }
+        }
+    }
 }

@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const {OpenAI} = require("openai");
 // Load environment variables
 require('dotenv').config();
 
@@ -17,6 +18,8 @@ app.use(cors({
     origin: '*',
     optionsSuccessStatus: 200,
 }));
+
+const openai = new OpenAI({apiKey: process.env.GPT_API_KEY});
 
 const prompt = 
 
@@ -42,14 +45,40 @@ app.post('/api/getGeminiAnswer', async (req, res, next) => {
     }
 });
 
-// Route to get weather data
-app.get('/api/getGPTAnswer', (req, res) => {
-    // Fetch weather data from external API
-    fetch(`http://api.weatherapi.com/v1/current.json?key=${process.env.API_KEY2}&q=Hanoi&aqi=no`)
-        .then(r => r.text())
-        .then(data => {
-            res.json(data);
+
+app.post('/api/getGPTAnswer', async (req, res) => {
+    try {
+        const { messages, model } = req.body;
+
+        if (!messages || messages.length === 0) {
+            return res.status(400).json({ error: 'Messages are required' });
+        }
+
+        const stream = await openai.chat.completions.create({
+            model: model || 'gpt-3.5-turbo',
+            messages: messages,
+            stream: true,
         });
+
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+        });
+
+        for await (const chunk of stream) {
+            const content = chunk.choices[0]?.delta?.content || '';
+            if (content) {
+                res.write(`data: ${JSON.stringify({ content })}\n\n`);
+            }
+        }
+
+        res.write('data: [DONE]\n\n');
+        res.end();
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'An error occurred while processing your request' });
+    }
 });
 
 // Start the server
