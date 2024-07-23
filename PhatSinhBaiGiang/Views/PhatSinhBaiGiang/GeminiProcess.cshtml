@@ -751,6 +751,7 @@
         }
 
         function updatePrompt() {
+            system_prompt = $('#system-prompt').val();
             var id = arrId.shift();
             document.querySelectorAll('.modal').forEach(modal => {
                 const textbox = modal.querySelector('.prompt-textbox');
@@ -798,6 +799,9 @@
                     $('.continue-process').show();
                     $('.next-content').text(arrNoiDung[0]);
                 }
+                
+                $('#sendRequest').removeClass('btn-info').addClass('btn-outline-info').prop('disabled', true);
+                
             }
         }
         function copyCode(el) {

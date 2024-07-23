@@ -323,13 +323,13 @@
         white-space: nowrap;
     }
 </style>
-
 <div class="container-fluid flex-grow-1 container-p-y" style="padding-bottom: 0 !important;">
     <div class="card">
         <div class="d-flex align-items-end row">
             <div class="col-md-12">
                 <div class="card-body">
-                    <div class="process-title">Phát sinh bài giảng cho các nội dung đã chọn</div>
+                    
+                    <div class="process-title">Phát sinh bai giang cho cac noi dung da chon</div>
                     <div class="prompt-content form-group">
                         @* <label>Prompt cho Gemini AI: (phải có từ khóa <span style="color: #db0505">{context}</span> để đại diện cho ngữ cảnh và <span style="color: #db0505">{content}</span> để đại diện cho nội dung câu hỏi)</label> *@
                         <label>System Prompt:</label>
@@ -412,7 +412,7 @@
 
 @section scripts {
     <script src="~/assets/js/markdown/showdown.min.js" type="text/javascript"></script>
-    <script src="~/assets/js/gpt-processing.js?v=1.1" type="text/javascript"></script>
+    <script src="~/assets/js/gemini-processing.js?v=1.1" type="text/javascript"></script>
     <script>
         var system_prompt = 'From now you are a SQL Teacher, have a lot of practical experience and high pedagogical skill, can explain knowledge in many ways to easy understand to learner, inspire learner. "SQL for Data Analytics" is first module in Data Analytics Certificate. The learners almost are working professionals and senior students.  You update your chat information only, no create content. I will give you syllabus for module after that';
 
@@ -751,6 +751,7 @@
         }
 
         function updatePrompt() {
+            system_prompt = $('#system-prompt').val();
             var id = arrId.shift();
             document.querySelectorAll('.modal').forEach(modal => {
                 const textbox = modal.querySelector('.prompt-textbox');
@@ -798,6 +799,9 @@
                     $('.continue-process').show();
                     $('.next-content').text(arrNoiDung[0]);
                 }
+                
+                $('#sendRequest').removeClass('btn-info').addClass('btn-outline-info').prop('disabled', true);
+                
             }
         }
         function copyCode(el) {
