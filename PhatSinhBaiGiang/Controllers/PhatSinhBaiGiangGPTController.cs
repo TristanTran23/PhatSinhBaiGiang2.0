@@ -16,7 +16,7 @@ namespace PhatSinhBaiGiang.Controllers
         // GET: PhatSinhBaiGiang
         public ActionResult Index()
         {
-            
+
             return View();
         }
         [HttpPost]
