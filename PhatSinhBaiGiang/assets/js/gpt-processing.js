@@ -8,6 +8,7 @@ async function sendQuestionToAgent(userQuestion, systemPrompt, outputid, parenti
         },
         body: JSON.stringify({
             messages: [
+                {role: "system", content: systemPrompt},
                 {role: "user", content: userQuestion},
             ],
             model: "gpt-4o-mini"
