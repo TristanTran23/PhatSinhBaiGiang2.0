@@ -41,43 +41,29 @@ app.post('/api/getGeminiAnswer', async (req, res, next) => {
         res.end();
 
     } catch (error) {
-        return next(error)
+        return next(error);
     }
 });
 
 
-app.post('/api/getGPTAnswer', async (req, res) => {
+app.post('/api/getGPTAnswer', async (req, res, next) => {
     try {
         const { messages, model } = req.body;
-
-        if (!messages || messages.length === 0) {
-            return res.status(400).json({ error: 'Messages are required' });
-        }
-
-        const stream = await openai.chat.completions.create({
-            model: model || 'gpt-3.5-turbo',
-            messages: messages,
-            stream: true,
-        });
-
-        res.writeHead(200, {
-            'Content-Type': 'text/event-stream',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-        });
-
-        for await (const chunk of stream) {
-            const content = chunk.choices[0]?.delta?.content || '';
-            if (content) {
-                res.write(`data: ${JSON.stringify({ content })}\n\n`);
+        if (messages != "") {
+            const response = await openai.chat.completions.create({
+                model: model,
+                messages: messages,
+                stream: true
+            });
+            for await(const chunk of response) {
+                res.write(chunk.choices[0]?.delta?.content || "");
             }
+        } else {
+            res.write(err)
         }
-
-        res.write('data: [DONE]\n\n');
         res.end();
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'An error occurred while processing your request' });
+        return next(error);
     }
 });
 

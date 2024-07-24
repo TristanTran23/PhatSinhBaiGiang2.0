@@ -1,4 +1,6 @@
-async function sendQuestionToAgent(userQuestion, systemPrompt, outputId, parentId) {
+const apiUrl = "http://localhost:3000/api/";
+
+async function sendQuestionToAgent(userQuestion, systemPrompt, outputid, parentid) {
     const response = await fetch(apiUrl + "getGPTAnswer", {
         method: "POST",
         headers: {
@@ -6,48 +8,37 @@ async function sendQuestionToAgent(userQuestion, systemPrompt, outputId, parentI
         },
         body: JSON.stringify({
             messages: [
-                {role: "system", content: systemPrompt},
                 {role: "user", content: userQuestion},
             ],
-            model: "gpt-3.5-turbo"
+            model: "gpt-4o-mini"
         }),
     });
 
     const reader = response.body.getReader();
-	$(`#${outputId}`).text(response);
-    const decoder = new TextDecoder();
-    const converter = new showdown.Converter();
+	var responseText = "";
+	var responseHtml = "";
+	var converter = new showdown.Converter();
+	const decoder = new TextDecoder("utf-8", { fatal: false, ignoreBOM: true, BOMseen: true });
+	
+	while (true) {
+		const { value, done } = await reader.read();
+		if (done) break;
 
-    let buffer = '';
-    while (true) {
-        const { value, done } = await reader.read();
-		$(`#${outputId}`.append("<div>1</div>"));
-        if (done) break;
+		responseText += decoder.decode(value, { stream: true }); //Decodeuint8arr(value);
+		responseHtml = responseText.replace(/_/g, 'emdash');
+		responseHtml = converter.makeHtml(responseHtml).replace('\n', '<br>');
+		responseHtml = responseHtml.replace(/emdash/g, '_');
 
-        buffer += decoder.decode(value);
-        const lines = buffer.split('\n');
-        buffer = lines.pop();
+		const reg = /\【.+\】/g;
+		responseHtml = responseHtml.replace(reg, "");
+		//document.getElementById('result').innerHTML = responseHtml;
+		$(`#${outputid}`).html(responseHtml);
 
-        for (const line of lines) {
-            if (line.startsWith('data: ')) {
-                const jsonData = line.slice(6);
-                if (jsonData === '[DONE]') {
-                    console.log('Stream complete');
-                    return;
-                }
-                try {
-                    const { content } = JSON.parse(jsonData);
-                    if (content) {
-                        let htmlContent = converter.makeHtml(content);
-                        $(`#${outputId}`).append(htmlContent);
-
-                        const element = document.getElementById(parentId);
-                        element.scrollTop = element.scrollHeight;
-                    }
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                }
-            }
-        }
-    }
+		var element = document.getElementById(parentid);
+		var currentHeight = element.scrollHeight;
+		element.scrollTop = currentHeight;
+	}
+	
+	
+	console.log('Response fully received');
 }
