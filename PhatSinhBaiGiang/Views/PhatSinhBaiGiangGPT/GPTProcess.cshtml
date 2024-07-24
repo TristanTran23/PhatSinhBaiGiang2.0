@@ -323,13 +323,13 @@
         white-space: nowrap;
     }
 </style>
-
 <div class="container-fluid flex-grow-1 container-p-y" style="padding-bottom: 0 !important;">
     <div class="card">
         <div class="d-flex align-items-end row">
             <div class="col-md-12">
                 <div class="card-body">
-                    <div class="process-title">Phát sinh bài giảng cho các nội dung đã chọn</div>
+                    
+                    <div class="process-title">Phát sinh bai giang cho cac noi dung da chon</div>
                     <div class="prompt-content form-group">
                         @* <label>Prompt cho Gemini AI: (phải có từ khóa <span style="color: #db0505">{context}</span> để đại diện cho ngữ cảnh và <span style="color: #db0505">{content}</span> để đại diện cho nội dung câu hỏi)</label> *@
                         <label>System Prompt:</label>
@@ -339,7 +339,7 @@
                         @* <input type="text", id="prompt" style="display: none;"> *@
                     <div class="process-container row">
                         <div class="content-list col-md-5 col-lg-4">
-                            <div class="content-title">Nội dung đã chọn</div>
+                            <div class="content-title">Noi dung da chon</div>
                             <div class="noi-dung-chon">
                                 @if (Model != null && Model.Count > 0)
                                 {
@@ -357,10 +357,10 @@
                                             <div class="modal-content">
                                                 <div>
                                                     <div class="modal-options">
-                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="default" id="@(content.Id)" class="prompt-option"/>Kiến thức</label></p>
-                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="syntax" id="@(content.Id)" class="prompt-option"/>Kiến thức + Cú pháp lệnh</label></p>
-                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="reference" id="@(content.Id)" class="prompt-option"/>Tài liệu tham khảo</label></p>
-                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="other" id="@(content.Id)" class="prompt-option"/>Khác:</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="default" id="@(content.Id)" class="prompt-option"/>Kien thuc</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="syntax" id="@(content.Id)" class="prompt-option"/>Kien thuc + Cu phap lenh</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="reference" id="@(content.Id)" class="prompt-option"/>Tai lieu tham khao</label></p>
+                                                        <p class="@content.Style"><label class="no-wrap"><input type="radio" value="other" id="@(content.Id)" class="prompt-option"/>Khac:</label></p>
                                                     </div>
                                                 </div>
                                                 <div class="modal-prompt">
@@ -388,7 +388,7 @@
                             </div>
                         </div>
                         <div class="content-processing col-md-7 col-lg-8">
-                            <div class="content-title">Germini AI Generation</div>
+                            <div class="content-title">GPT AI Generation</div>
                             <div class="generate-content" id="generatedContainer">
                                 <div class="content-container">
                                     <div class="generate-results" id="generatedResult">
@@ -399,9 +399,9 @@
                                 <img src="~/Content/images/processing.gif" alt="" />
                             </div>
                             <div class="continue-process">
-                                <button type="button" id="nextRequest" class="btn btn-info">Nhấn để phát sinh tiếp <span class="next-content"></span></button>                               
+                                <button type="button" id="nextRequest" class="btn btn-info">Nhan đe phat sinh tiep<span class="next-content"></span></button>                               
                             </div>
-                            <button type="button" id="download" class="download-button">Tải xuống</button>
+                            <button type="button" id="download" class="download-button">Tai xuong</button>
                         </div>
                     </div>
                 </div>
@@ -752,6 +752,7 @@
         }
 
         function updatePrompt() {
+            system_prompt = $('#system-prompt').val();
             var id = arrId.shift();
             document.querySelectorAll('.modal').forEach(modal => {
                 const textbox = modal.querySelector('.prompt-textbox');
@@ -799,6 +800,9 @@
                     $('.continue-process').show();
                     $('.next-content').text(arrNoiDung[0]);
                 }
+                
+                $('#sendRequest').removeClass('btn-info').addClass('btn-outline-info').prop('disabled', true);
+                
             }
         }
         function copyCode(el) {
