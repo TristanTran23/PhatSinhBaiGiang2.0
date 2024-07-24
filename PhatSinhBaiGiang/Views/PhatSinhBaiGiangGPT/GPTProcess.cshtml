@@ -411,18 +411,19 @@
 </div>
 
 @section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
     <script src="~/assets/js/markdown/showdown.min.js" type="text/javascript"></script>
-    <script src="~/assets/js/gemini-processing.js?v=1.1" type="text/javascript"></script>
+    <script src="~/assets/js/gpt-processing.js" type="text/javascript"></script>
     <script>
         var system_prompt = 'From now you are a SQL Teacher, have a lot of practical experience and high pedagogical skill, can explain knowledge in many ways to easy understand to learner, inspire learner. "SQL for Data Analytics" is first module in Data Analytics Certificate. The learners almost are working professionals and senior students.  You update your chat information only, no create content. I will give you syllabus for module after that';
 
-        var prompt1 = {0:`{systemPrompt} Become a good Teacher, have a lot of practical experience in SQL. You will write a SQL handbook for working professionals and senior students. The document not only focuses on SQL query techniques in Google BigQuery ML but also guides learners on how to use SQL to analyze data efficiently in their work. The outline of the document as follows:
+        var prompt1 = {0:`Become a good Teacher, have a lot of practical experience in SQL. You will write a SQL handbook for working professionals and senior students. The document not only focuses on SQL query techniques in Google BigQuery ML but also guides learners on how to use SQL to analyze data efficiently in their work. The outline of the document as follows:
     {context}
     I'd like you to start writing the first sections, focusing particularly on the {content}.
     The content begin with the important meaning of knowing Database architecture in relational databases in Analytic data (WHY). After that, you explain WHAT - Database architecture in relational databases. Then add HOW to build Database architecture in BigQuery in Google.
     The content must be detail, easy to understand and professional that really connect with readers. Use examples to help explain complex concepts with our readers. No made assumption. Use table, image when suitable to illustrate. Give links reference for the learner can read more. Do not write any further until I instruct you to do so. Translate the result to Vietnammese`};
-        var prompt2 = {0:`{systemPrompt} You are a teacher assistant and you will create teaching materials about SQL for Data Analytics. You need to follow my instructions step by step. You have to see what bullet points the user have selected prior to creating texts. First, you need an outline for the material, which is derived from bullet points that the user has selected as follows: {context} The numbering for headings has the same format as the list of topic selection. You are now required to write {content} for each topic and main idea for this outline. Each section must be informative, easy to understand explained carefully in detail and fully expanded. You need to explain what, why and how in each topic. From section III and on, you are required to give examples about a specific database about students in a high school. You may create a database in your memory, and the examples are about that database. Graphs and illustrations may be included where relevant. The content should be in Vietnamese, and for each main idea there must be two to four bullet points satisfying my requirements. The text font is Arial. If you have completed the user’s selection of topics, you will write “end of document”.`};
-        var prompt3 = {0:`{systemPrompt} You are a teacher assistant and you will provide links for students who are learning SQL for Data Analysis. You need to follow my instructions step by step. You have to see what bullet points the user have selected prior to providing the links {context} For each selection the user has made, give links in the output format of bullet points. The links could be to courses, Youtube videos, textbooks or papers {content}`};
+        var prompt2 = {0:`You are a teacher assistant and you will create teaching materials about SQL for Data Analytics. You need to follow my instructions step by step. You have to see what bullet points the user have selected prior to creating texts. First, you need an outline for the material, which is derived from bullet points that the user has selected as follows: {context} The numbering for headings has the same format as the list of topic selection. You are now required to write {content} for each topic and main idea for this outline. Each section must be informative, easy to understand explained carefully in detail and fully expanded. You need to explain what, why and how in each topic. From section III and on, you are required to give examples about a specific database about students in a high school. You may create a database in your memory, and the examples are about that database. Graphs and illustrations may be included where relevant. The content should be in Vietnamese, and for each main idea there must be two to four bullet points satisfying my requirements. The text font is Arial. If you have completed the user’s selection of topics, you will write “end of document”.`};
+        var prompt3 = {0:`You are a teacher assistant and you will provide links for students who are learning SQL for Data Analysis. You need to follow my instructions step by step. You have to see what bullet points the user have selected prior to providing the links {context} For each selection the user has made, give links in the output format of bullet points. The links could be to courses, Youtube videos, textbooks or papers {content}`};
         var otherPrompt = {0: ``};
         const arrNoiDung = [];
         const arrId = [];
@@ -783,7 +784,7 @@
                 updatePrompt();
                 
                 var content = arrNoiDung.shift();
-                var question = $('#prompt').val().replace("{systemPrompt}", system_prompt).replace("{context}", nd_context).replace("{content}", content);
+                var question = $('#prompt').val().replace("{context}", nd_context).replace("{content}", content);
                 @* $('#currentPrompt').text("Current prompt:\n" + question); *@
 
                 var parentid = 'generatedContainer';
@@ -792,7 +793,7 @@
                 $('.generate-results').append(htmlResult);
                 $('.img-processing').show();
                 $('.continue-process').hide();
-                await sendQuestionToAgent(question, outputid, parentid)
+                await sendQuestionToAgent(question, system_prompt, outputid, parentid)
                 $(`#${outputid} pre`).append(`<button id="btncopycode" class="btn-copy-code" onclick="copyCode(this)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" class="icon-sm"><path fill="currentColor" fill-rule="evenodd" d="M7 5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-2v2a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3h2zm2 2h5a3 3 0 0 1 3 3v5h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1zM5 9a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1z" clip-rule="evenodd"></path></svg> Copy code</button>`);
                 $('.img-processing').hide();
                 if (arrNoiDung.length > 0) {
@@ -864,7 +865,6 @@
                 }
             } else {
                 // Fallback for browsers that don't support the File System Access API
-                alert('Your browser does not support the File System Access API. The file will be downloaded using the default method.');
                 
                 if (typeof saveAs === 'function') {
                     saveAs(blob, "document.doc");
@@ -905,7 +905,6 @@
                     console.error('Error saving the file:', err);
                 }
             } else {
-                alert('Your browser does not support the File System Access API. The file will be downloaded using the default method.');
                 
                 if (typeof saveAs === 'function') {
                     saveAs(blob, "prompt.json");

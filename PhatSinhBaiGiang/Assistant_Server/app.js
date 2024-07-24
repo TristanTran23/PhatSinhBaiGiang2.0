@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const {OpenAI} = require("openai");
 // Load environment variables
 require('dotenv').config();
 
@@ -17,6 +18,8 @@ app.use(cors({
     origin: '*',
     optionsSuccessStatus: 200,
 }));
+
+const openai = new OpenAI({apiKey: process.env.GPT_API_KEY});
 
 const prompt = 
 
@@ -38,18 +41,30 @@ app.post('/api/getGeminiAnswer', async (req, res, next) => {
         res.end();
 
     } catch (error) {
-        return next(error)
+        return next(error);
     }
 });
 
-// Route to get weather data
-app.get('/api/getGPTAnswer', (req, res) => {
-    // Fetch weather data from external API
-    fetch(`http://api.weatherapi.com/v1/current.json?key=${process.env.API_KEY2}&q=Hanoi&aqi=no`)
-        .then(r => r.text())
-        .then(data => {
-            res.json(data);
-        });
+
+app.post('/api/getGPTAnswer', async (req, res, next) => {
+    try {
+        const { messages, model } = req.body;
+        if (messages != "") {
+            const response = await openai.chat.completions.create({
+                model: model,
+                messages: messages,
+                stream: true
+            });
+            for await(const chunk of response) {
+                res.write(chunk.choices[0]?.delta?.content || "");
+            }
+        } else {
+            res.write(err)
+        }
+        res.end();
+    } catch (error) {
+        return next(error);
+    }
 });
 
 // Start the server

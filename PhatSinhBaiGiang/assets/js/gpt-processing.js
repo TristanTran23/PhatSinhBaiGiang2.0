@@ -1,19 +1,20 @@
-const apiUrl = `https://api.openai.com/v1/models`;
+const apiUrl = "http://localhost:3000/api/";
 
-async function sendQuestionToAgent(userQuestion, outputid, parentid) {
-	//$(output).html("<img src='/template/frontend/images/generating2.gif' style='width: 50px !important;' />");
-    var myHeader = new Hearder();
-    myHeader.append(`Authorization: Bearer ${process.env.GPT_API_KEY}`);
-	var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-      };
-    const response = await fetch("https://api.openai.com/v1/models", requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
-	const reader = response.body.getReader();
+async function sendQuestionToAgent(userQuestion, systemPrompt, outputid, parentid) {
+    const response = await fetch(apiUrl + "getGPTAnswer", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            messages: [
+                {role: "user", content: userQuestion},
+            ],
+            model: "gpt-4o-mini"
+        }),
+    });
+
+    const reader = response.body.getReader();
 	var responseText = "";
 	var responseHtml = "";
 	var converter = new showdown.Converter();
