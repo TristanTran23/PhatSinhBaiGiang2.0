@@ -853,7 +853,7 @@ All attributes should be included. The content should be translated to Vietnames
                 $('.generate-results').append(htmlResult);
                 $('.img-processing').show();
                 $('.continue-process').hide();
-                if ($('#choose-api').value === "Gemini AI Generation") {
+                if ($('#choose-api').val() === "Gemini AI Generation") {
                     await sendQuestionToAgent(question, outputid, parentid)
                 } else {
                     
