@@ -323,7 +323,7 @@
         white-space: nowrap;
     }
     .dropbtn {
-        background-color: #1e883c;
+        background-color: #4d4b4b;
         color: white;
         padding: 1px;
         font-size: 16px;
@@ -339,9 +339,7 @@
     .dropdown-content {
         display: none;
         position: absolute;
-        background-color: rgb(221, 218, 37), 187, 25);
         min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
     }
         .dropdown-content a {
@@ -349,6 +347,7 @@
             padding: 12px 16px;
             text-decoration: none;
             display: block;
+            background-color: white;
         }
 
     .dropdown-content a:hover {
@@ -357,10 +356,10 @@
 
     .dropdown:hover .dropdown-content {
         display: block;
-    }
+    }  
     .dropdown:hover .dropbtn {
-        background-color: #3e8e41;
-    }
+        color: yellow;
+    } 
 </style>
 
 <div class="container-fluid flex-grow-1 container-p-y" style="padding-bottom: 0 !important;">
@@ -430,7 +429,8 @@
                             <div class="content-title">
                                 <div class="dropdown">
                                     <input type="button" class="dropbtn" id="choose-api" value="Gemini AI Generation"/>
-                                    <div class="dropdown-content">
+                                    <span style="font-size: 18px;">&#9662;</span>
+                                    <div class="dropdown-content" id="myDropdown">
                                         <input type="button" id="gemini-model" value="Gemini AI Generation"/>
                                         <input type="button" id="gpt-model" value="GPT AI Generation"/>
                                     </div>
