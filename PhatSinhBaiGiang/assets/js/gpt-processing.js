@@ -1,6 +1,6 @@
 const apiUrl = "http://localhost:3000/api/";
 
-async function sendQuestionToAgent(userQuestion, systemPrompt, outputid, parentid) {
+async function sendQuestionToGPT(userQuestion, systemPrompt, outputid, parentid) {
     const response = await fetch(apiUrl + "getGPTAnswer", {
         method: "POST",
         headers: {
