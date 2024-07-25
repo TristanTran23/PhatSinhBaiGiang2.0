@@ -844,21 +844,22 @@ All attributes should be included. The content should be translated to Vietnames
                 updatePrompt();
                 $('#sendRequest').removeClass('btn-info').addClass('btn-outline-info').prop('disabled', true);
                 var content = arrNoiDung.shift();
-                var question = $('#prompt').val().replace("{systemPrompt}", system_prompt).replace("{context}", nd_context).replace("{content}", content);
-                @* $('#currentPrompt').text("Current prompt:\n" + question); *@
-
                 var parentid = 'generatedContainer';
                 var outputid = 'generatedItem' + $('.generate-item').length + 1;
                 var htmlResult = `<div class="generate-item" id="${outputid}"></div>`;
                 $('.generate-results').append(htmlResult);
                 $('.img-processing').show();
                 $('.continue-process').hide();
-                if ($('#choose-api').value === "Gemini AI Generation") {
-                    await sendQuestionToAgent(question, outputid, parentid)
-                } else {
-                    
+                alert("call api");
+                if ($('#choose-api').val() === "Gemini AI Generation") {
+                    var question = $('#prompt').val().replace("{systemPrompt}", system_prompt).replace("{context}", nd_context).replace("{content}", content);
+                    await sendQuestionToGemini(question, outputid, parentid);
+                } else if ($('#choose-api').val() === "GPT AI Generation") {
+                    alert("call api gpt");
+                    var question = $('#prompt').val().replace("{context}", nd_context).replace("{content}", content);
+                    await sendQuestionToGPT(question, system_prompt, outputid, parentid);
                 }
-                
+                alert("call api xong");
                 $(`#${outputid} pre`).append(`<button id="btncopycode" class="btn-copy-code" onclick="copyCode(this)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" class="icon-sm"><path fill="currentColor" fill-rule="evenodd" d="M7 5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-2v2a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3h2zm2 2h5a3 3 0 0 1 3 3v5h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1zM5 9a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1z" clip-rule="evenodd"></path></svg> Copy code</button>`);
                 $('.img-processing').hide();
                 if (arrNoiDung.length > 0) {
